@@ -1,17 +1,31 @@
+import { useRecipes } from "@/hooks/useRecipes";
 import { colors } from "@/lib/colors";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { useState } from 'react';
-import { Text, TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
 
 
 const RecipeEditorScreen=()=>{
     const { id } =useLocalSearchParams();
+    
+    const navigation = useNavigation();
+
     const isNew = id ==='new'
 
     const [ title, setTitle ] =useState('');
     const [ ingredients, setIngredients ] =useState('');
     const [ recipe, setRecipe ] = useState('');
     const [ vidlink, setVidlink ] = useState('');
+    const isDisabled = title.length <=0 || ingredients.length <=0 || recipe.length <=0;
+
+    const { addRecipe } = useRecipes();
+
+    const save =()=>{
+        if(isNew){
+            addRecipe(title, ingredients, recipe, vidlink);
+        }
+        navigation.goBack();
+    };
 
     return<View style={{flex:1}} >
         <Stack.Screen options={{
@@ -86,20 +100,24 @@ const RecipeEditorScreen=()=>{
                     fontWeight:'700'
                 }}
             />
-            <Text style={{
-                    alignSelf:'flex-end',
-                    paddingHorizontal: 14,
-                    paddingVertical:10,
-                    borderRadius:12,
-                    backgroundColor: colors.accent,
-                    color:'#fff',
-                    fontWeight:'600',
-                    overflow:"hidden",
-                    marginRight:12,
-                    marginTop:12
-                  }}>
-                    Save
-            </Text>
+            <Pressable style={{marginBottom:12}} disabled={isDisabled} onPress={save}>
+                <Text style={{
+                        alignSelf:'flex-end',
+                        paddingHorizontal: 14,
+                        paddingVertical:10,
+                        borderRadius:12,
+                        backgroundColor: colors.accent,
+                        color:'#fff',
+                        fontWeight:'600',
+                        overflow:"hidden",
+                        marginRight:12,
+                        marginTop:12,
+                        opacity: isDisabled ? 0.5 : 1
+                      }}>
+                        Save
+                </Text>
+            </Pressable>
+
         </View>
     </View>;
 };

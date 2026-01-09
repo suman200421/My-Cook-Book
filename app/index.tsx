@@ -1,8 +1,10 @@
+import { useRecipes } from "@/hooks/useRecipes";
 import { colors } from "@/lib/colors";
 import { Link, Stack } from "expo-router";
 import { Text, View } from "react-native";
 
 export default function Index() {
+  const { recipes } = useRecipes();
   return (
     <View
       style={{
@@ -29,6 +31,12 @@ export default function Index() {
         Add Recipes
       </Text>
     </Link>
+    <View>
+      {recipes.map((recip) => 
+        <Text style= {{color:colors.text}}key={recip.id}>
+          {recip.title}
+        </Text>)}
+    </View>
     </View>
   );
 }

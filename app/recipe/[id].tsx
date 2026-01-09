@@ -3,13 +3,15 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from 'react';
 import { Text, TextInput, View } from "react-native";
 
+
 const RecipeEditorScreen=()=>{
     const { id } =useLocalSearchParams();
     const isNew = id ==='new'
 
     const [ title, setTitle ] =useState('');
     const [ ingredients, setIngredients ] =useState('');
-    const [ recipe, setRecipe ] = useState('')
+    const [ recipe, setRecipe ] = useState('');
+    const [ vidlink, setVidlink ] = useState('');
 
     return<View style={{flex:1}} >
         <Stack.Screen options={{
@@ -56,7 +58,7 @@ const RecipeEditorScreen=()=>{
                 multiline
                 style={{
                     flex:1,
-                    minHeight:180,
+                    //minHeight:180,
                     backgroundColor:colors.card,
                     color:colors.text,
                     paddingHorizontal:14,
@@ -66,6 +68,22 @@ const RecipeEditorScreen=()=>{
                     borderColor:colors.border,
                     fontWeight:'700',
                     textAlignVertical:'top'
+                }}
+            />
+            <TextInput
+                placeholder="Optional video link for recipe"
+                placeholderTextColor={colors.sub}
+                value={vidlink}
+                onChangeText={setVidlink}
+                style={{
+                    backgroundColor:colors.card,
+                    color:colors.text,
+                    paddingHorizontal:14,
+                    paddingVertical:12,
+                    borderRadius:12,
+                    borderWidth:1,
+                    borderColor:colors.border,
+                    fontWeight:'700'
                 }}
             />
             <Text style={{

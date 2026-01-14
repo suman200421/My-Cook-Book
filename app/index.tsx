@@ -1,0 +1,156 @@
+import { RecipeItem } from "@/components/RecipeItem";
+import { useRecipes } from "@/hooks/useRecipes";
+import { colors } from "@/lib/colors";
+import { Link, Stack } from "expo-router";
+import { useState } from "react";
+import { FlatList, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+
+
+export default function Index() {
+  const { recipes, deleteRecipe} = useRecipes();
+
+  const[search, setSearch]= useState('');
+
+  const [categoryFilter, setCategoryFilter] = useState< 
+    "All"
+    | "Main course"
+    | "Dessert"
+    | "Appetizer"
+    | "Beverage"
+    | "Salad"
+    | "Soup"
+    | "Snack"
+    | "Bread"
+    | "Sauce"
+    | "Side dish"
+    | "Breakfast"
+    | "Other"
+  >("All");
+
+  const handleRemove = async (id: string) => {
+    await deleteRecipe(id);
+  };
+
+  const filteredRecipes = recipes.filter((recipe) =>{
+    const matchesText=
+      recipe.title.toLowerCase().includes(search.toLowerCase()) ||
+      recipe.ingredients.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory =
+      categoryFilter === "All" || recipe.category === categoryFilter;
+
+    return matchesText && matchesCategory;
+});
+
+
+  return (
+    <View
+      style={{
+        flex: 1
+      }}
+    >
+    <Stack.Screen
+        options={{
+          title: 'Recipes'
+        }}
+    />
+
+      <View
+        style={{
+          marginHorizontal: 16,
+          marginTop: 12,
+          marginBottom: 4,
+          backgroundColor: colors.card,
+          borderRadius: 12,
+          borderWidth: 1,
+          borderColor: colors.border,
+          paddingHorizontal: 12,
+        }}
+      >
+        <TextInput
+          placeholder="Search recipes..."
+          placeholderTextColor={colors.sub}
+          value={search}
+          onChangeText={setSearch}
+          style={{
+            height: 44,
+            color: colors.text,
+            fontSize: 14,
+            marginHorizontal:16,
+            //fontWeight: '500',
+          }}
+        />
+      </View>
+      <View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          paddingBottom: 4,
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        {["All", "Main course", "Dessert", "Appetizer", "Beverage", "Salad", "Soup", "Snack", "Bread", "Sauce", "Side dish", "Breakfast", "Other"].map((food) => (
+          <Pressable
+            key={food}
+            onPress={() => setCategoryFilter(food as any)}
+            style={{
+              paddingHorizontal: 14,
+              paddingVertical: 8,
+              borderRadius: 20,
+              backgroundColor:
+                categoryFilter === food ? colors.accent : colors.card,
+              borderWidth: 1,
+              borderColor: colors.border,
+            }}
+          >
+            <Text
+              style={{
+                color: categoryFilter === food ? "#fff" : colors.text,
+                fontWeight: "600",
+              }}
+            >
+              {food}
+            </Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+      </View>
+
+
+      <Link href={'/recipe/new'} asChild>
+        <Text style={{
+        alignSelf:'flex-end',
+        paddingHorizontal: 14,
+        paddingVertical:10,
+        borderRadius:12,
+        backgroundColor: colors.accent,
+        color:'#fff',
+        fontWeight:'600',
+        overflow:"hidden",
+        marginRight:12,
+        marginTop:8
+      }}>
+        Add Recipes
+      </Text>
+      </Link>
+    <FlatList
+      contentContainerStyle ={{
+        padding:16,
+        gap:12
+      }}
+      data={filteredRecipes}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <RecipeItem
+          item={item}
+          onRemove={handleRemove}
+        />
+      )}
+    />  
+
+    </View>
+    
+  );
+}

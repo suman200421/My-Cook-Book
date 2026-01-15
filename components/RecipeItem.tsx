@@ -77,7 +77,7 @@ export const RecipeItem = ({
 
       <View style={{
         flexDirection:'row',
-        gap:20
+        gap:8
       }}>
         <Pressable
           onPress={() =>

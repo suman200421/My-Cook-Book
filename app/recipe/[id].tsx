@@ -1,9 +1,8 @@
 import { useRecipes } from "@/hooks/useRecipes";
 import { colors } from "@/lib/colors";
-import { Picker } from "@react-native-picker/picker";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from 'react';
-import { Alert, Pressable, Text, TextInput, View } from "react-native";
+import { Alert, Modal, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
 
 const RecipeEditorScreen=()=>{
@@ -22,7 +21,7 @@ const RecipeEditorScreen=()=>{
     const [category, setCategory] = useState<
         "Main course" | "Dessert" | "Appetizer" | "Beverage" | "Salad" | "Soup" | "Snack" | "Bread" | "Sauce" | "Side dish" | "Breakfast" | "Other"
     >(existingRecipe?.category ?? "Main course");
-
+    const [categoryModalVisible, setCategoryModalVisible] = useState(false);
     
 
 
@@ -74,6 +73,21 @@ const RecipeEditorScreen=()=>{
         router.back();
     };
 
+    const CATEGORIES = [
+        "Main course",
+        "Dessert",
+        "Appetizer",
+        "Beverage",
+        "Salad",
+        "Soup",
+        "Snack",
+        "Bread",
+        "Side dish",
+        "Breakfast",
+        "Other",
+    ] as const;
+
+
 
     return<View style={{flex:1}} >
         <Stack.Screen options={{
@@ -98,34 +112,97 @@ const RecipeEditorScreen=()=>{
                 }}
             />
 
-            <View
-                style={{
-                    backgroundColor: colors.card,
-                    borderRadius: 12,
-                    borderWidth: 1,
-                    borderColor: colors.border,
-                    //overflow: 'hidden',
-                }}
-            >
-                <Picker
-                    selectedValue={category}
-                    onValueChange={(value) => setCategory(value)}
-                >
-                    <Picker.Item label="Main course" value="Main course" />
-                    <Picker.Item label="Dessert" value="Dessert" />
-                    <Picker.Item label="Appetizer" value="Appetizer" />
-                    <Picker.Item label="Beverage" value="Beverage" />
-                    <Picker.Item label="Salad" value="Salad" />
-                    <Picker.Item label="Soup" value="Soup" />
-                    <Picker.Item label="Snack" value="Snack" />
-                    <Picker.Item label="Bread" value="Bread" />
-                    <Picker.Item label="Sauce" value="Sauce" />
-                    <Picker.Item label="Side dish" value="Side dish" />
-                    <Picker.Item label="Breakfast" value="Breakfast" />
-                    <Picker.Item label="Other" value="Other" />
-                </Picker>
-            </View>
+            <View style={{ padding: 16 }}>
 
+                {/* Category Input (Pressable) */}
+                <Pressable
+                    onPress={() => setCategoryModalVisible(true)}
+                    style={{
+                        backgroundColor: colors.card,
+                        borderRadius: 12,
+                        borderWidth: 1,
+                        borderColor: colors.border,
+                        paddingHorizontal: 14,
+                        paddingVertical: 14,
+                        marginHorizontal:-15,
+                        marginVertical:-15
+                    }}
+                >
+                    <Text style={{ color: colors.text, fontSize: 16, fontWeight: "600" }}>
+                        {category}
+                    </Text>
+                </Pressable>
+
+                {/* other inputs here (ingredients, recipe, etc.) */}
+
+                {/* Category Modal (SEPARATE, not nested) */}
+                <Modal
+                    visible={categoryModalVisible}
+                    transparent
+                    animationType="slide"
+                    onRequestClose={() => setCategoryModalVisible(false)}
+                >
+                    <Pressable
+                        style={{
+                            flex: 1,
+                            backgroundColor: "rgba(0,0,0,0.4)",
+                            justifyContent: "flex-end",
+                        }}
+                        onPress={() => setCategoryModalVisible(false)}
+                    >
+                        <View
+                            style={{
+                                backgroundColor: colors.bg,
+                                borderTopLeftRadius: 20,
+                                borderTopRightRadius: 20,
+                                padding: 16,
+                                maxHeight: "60%",
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 18,
+                                    fontWeight: "700",
+                                    marginBottom: 12,
+                                    color: colors.text,
+                                }}
+                            >
+                                Select Category
+                            </Text>
+
+                            <ScrollView showsVerticalScrollIndicator={false}>
+                                {CATEGORIES.map((item) => (
+                                <Pressable
+                                    key={item}
+                                    onPress={() => {
+                                        setCategory(item);
+                                        setCategoryModalVisible(false);
+                                    }}
+                                    style={{
+                                        paddingVertical: 14,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: colors.border,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 16,
+                                            color:
+                                                item === category ? colors.accent : colors.text,
+                                            fontWeight:
+                                                item === category ? "700" : "500",
+                                        }}
+                                    >
+                                        {item}
+                                    </Text>
+                                </Pressable>
+                                ))}
+                            </ScrollView>
+                        </View>
+                    </Pressable>
+                </Modal>
+
+            </View>
 
             <TextInput
                 placeholder="Recipe Ingredients(Separated Using comma)"

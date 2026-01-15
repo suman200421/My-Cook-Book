@@ -142,7 +142,7 @@ export default function ViewRecipe() {
         }}
       >
         <Pressable
-          onPress={() => router.replace("/")}
+          onPress={() => router.back()}
           style={{
             flex: 1,
             paddingVertical: 12,
@@ -157,7 +157,7 @@ export default function ViewRecipe() {
         </Pressable>
 
         <Pressable
-          onPress={() => router.push(`/recipe/${recipe.id}`)}
+          onPress={() => router.push(`/recipe/${id}`)}
           style={{
             flex: 1,
             paddingVertical: 12,
@@ -171,7 +171,7 @@ export default function ViewRecipe() {
           </Text>
         </Pressable>
       </View>
-    </AppFooter>
+      </AppFooter>
     </ScrollView>
   );
 }

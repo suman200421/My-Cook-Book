@@ -46,7 +46,10 @@ export const RecipeItem = ({
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-        <Text style={{ color: colors.text, fontSize: 16, fontWeight: "700" }}>
+        <Text 
+          numberOfLines={1}
+          ellipsizeMode='tail'
+          style={{ color: colors.text, fontSize: 16, fontWeight: "700", flexShrink:1, maxWidth:"60%"}}>
           {item.title}
         </Text>
 
@@ -56,6 +59,7 @@ export const RecipeItem = ({
           paddingVertical: 2,
           borderRadius: 8,
           backgroundColor: colors.border,
+          flexShrink:0,
         }}
       >
         <Text
@@ -73,7 +77,7 @@ export const RecipeItem = ({
 
       <View style={{
         flexDirection:'row',
-        gap:8
+        gap:20
       }}>
         <Pressable
           onPress={() =>

@@ -1,3 +1,4 @@
+import AppFooter from "@/components/AppFooter";
 import { useRecipes } from "@/hooks/useRecipes";
 import { colors } from "@/lib/colors";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
@@ -253,28 +254,29 @@ const RecipeEditorScreen=()=>{
                     fontWeight:'700'
                 }}
             />
-            <Pressable style={{
-                marginBottom:12}}
-                disabled={isDisabled}
-                onPress={save}
-            >
-                <Text style={{
-                        alignSelf:'flex-end',
-                        paddingHorizontal: 14,
-                        paddingVertical:10,
-                        borderRadius:12,
-                        backgroundColor: colors.accent,
-                        color:'#fff',
-                        fontWeight:'600',
-                        overflow:"hidden",
-                        marginRight:12,
-                        marginTop:12,
-                        opacity: isDisabled ? 0.5 : 1
-                      }}>
-                        Save
-                </Text>
-            </Pressable>
-
+            <AppFooter>
+                <Pressable style={{
+                    marginBottom:12}}
+                    disabled={isDisabled}
+                    onPress={save}
+                >
+                    <Text style={{
+                            alignSelf:'flex-end',
+                            paddingHorizontal: 14,
+                            paddingVertical:10,
+                            borderRadius:12,
+                            backgroundColor: colors.accent,
+                            color:'#fff',
+                            fontWeight:'600',
+                            overflow:"hidden",
+                            marginRight:12,
+                            marginTop:12,
+                            opacity: isDisabled ? 0.5 : 1
+                        }}>
+                            Save
+                    </Text>
+                </Pressable>
+            </AppFooter>
         </View>
     </View>;
 };

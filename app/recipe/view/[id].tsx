@@ -1,3 +1,4 @@
+import AppFooter from "@/components/AppFooter";
 import { useRecipes } from "@/hooks/useRecipes";
 import { colors } from "@/lib/colors";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
@@ -132,6 +133,7 @@ export default function ViewRecipe() {
       ) : null}
 
       {/* Actions */}
+      <AppFooter>
       <View
         style={{
           flexDirection: "row",
@@ -169,6 +171,7 @@ export default function ViewRecipe() {
           </Text>
         </Pressable>
       </View>
+    </AppFooter>
     </ScrollView>
   );
 }

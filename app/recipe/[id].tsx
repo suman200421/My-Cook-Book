@@ -29,9 +29,6 @@ const RecipeEditorScreen=()=>{
     const [ ingredients, setIngredients ] =useState(existingRecipe?.ingredients ?? '');
     const [ recipe, setRecipe ] = useState(existingRecipe?.recipe ?? '');
     const [ vidlink, setVidlink ] = useState(existingRecipe?.vidlink ?? '');
-    /*const [ isPinned, setIsPinned ] = useState(0);
-    const [ createdAt, setCreatedAt ] = useState(Date.now());
-    const [ updatedAt, setUpdatedAt ] = useState(Date.now());*/
 
     const isDisabled = title.length <=0 || ingredients.length <=0 || recipe.length <=0;
 
@@ -61,7 +58,7 @@ const RecipeEditorScreen=()=>{
             [{
                 text:'OK',
                 onPress:()=>{
-                    router.replace('/');
+                    router.back();
                 }
             }]
            );

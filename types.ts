@@ -3,15 +3,15 @@ export type Recipe={
     title:string;
     ingredients:string;
 
-    /*mainIngredients:string;
-    otherIngredients:string;*/
     recipe:string;
     vidlink:string;
 
+    isFavorite?:boolean;
     //servings?:number;
-    //totalTime?:number; //in minutes
-
+    //prepTime?:number;
+    //cookTime?:number;
     //difficulty?:"Easy" | "Medium" | "Hard";
+    //recipeNotes:string;
 
     createdAt:number;
     updatedAt:number;

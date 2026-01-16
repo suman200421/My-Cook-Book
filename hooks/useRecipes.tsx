@@ -7,6 +7,7 @@ type RecipesContextType={
     addRecipe: (title:string, ingredients:string, recipe:string, vidlink:string, category: Recipe["category"]) => Promise<Recipe>;
     updatedRecipe: (id:string, title:string, ingredients:string, recipe:string, vidlink:string, category: Recipe["category"]) => Promise<Recipe|null>;
     deleteRecipe: (id:string) => Promise<void>;
+    toggleFavorite:(id:string)=>Promise<void>;
     //getRecipeById: (id:string) => Promise<Recipe | null>;
 };
 
@@ -49,6 +50,7 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
             recipe: recipe.trim(),
             vidlink: vidlink.trim(),
             category,
+            isFavorite:false,
             createdAt: now,
             updatedAt: now,
         };
@@ -62,6 +64,7 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
             recipen.recipe,
             recipen.vidlink,
             recipen.category,
+            recipen.isFavorite? 1 : 0,
             recipen.createdAt,
             recipen.updatedAt
         ]
@@ -119,6 +122,28 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
     ));
     return updatedRecipe;
     };
+
+    const toggleFavorite = async (id: string) => {
+        const db = await getDBConnection();
+
+        setRecipes((prev) =>
+            prev.map((r) => {
+                if (r.id === id) {
+                    const updated = { ...r, isFavorite: !r.isFavorite };
+
+                    db.runAsync(
+                        `UPDATE recipes SET isFavorite = ?, updatedAt = ? WHERE id = ?`,
+                        [updated.isFavorite ? 1 : 0, Date.now(), id]
+                    );
+
+                    return updated;
+                }
+                return r;
+            })
+        );
+    };
+
+
     const deleteRecipe = async (id: string) => {
         const db = await getDBConnection();
 
@@ -135,7 +160,7 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
 
 
     return (
-        <RecipesContext.Provider value={{recipes, addRecipe, updatedRecipe, deleteRecipe}}>
+        <RecipesContext.Provider value={{recipes, addRecipe, updatedRecipe, deleteRecipe, toggleFavorite}}>
             {children}
         </RecipesContext.Provider>
     )

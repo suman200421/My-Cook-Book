@@ -1,3 +1,4 @@
+import FavoriteButton from "@/components/FavoriteButton";
 import { colors } from '@/lib/colors';
 import { Recipe } from '@/types';
 import { router } from 'expo-router';
@@ -72,13 +73,19 @@ export const RecipeItem = ({
           {item.category}
         </Text>
       </View>
-    </View>
-
+      </View>
+      
 
       <View style={{
         flexDirection:'row',
         gap:8
       }}>
+
+      <FavoriteButton
+        recipeId={item.id}
+        isFavorite={item.isFavorite}
+      />
+
         <Pressable
           onPress={() =>
             Alert.alert(

@@ -34,42 +34,6 @@ const RecipeEditorScreen=()=>{
     const isDisabled = title.length <=0 || ingredients.length <=0 || recipe.length <=0;
 
 
-    /*const save =async()=>{
-        try {
-           if(isNew){
-                await addRecipe(
-                    title,
-                    ingredients,
-                    recipe,
-                    vidlink,
-                    category
-                );
-            }else if(typeof id ==='string'){
-                await updatedRecipe(
-                    id,
-                    title,
-                    ingredients,
-                    recipe,
-                    vidlink,
-                    category
-                );
-            }
-           Alert.alert('Success', isNew ? 'Recipe created successfully' : 'Recipe updated successfully',
-            [{
-                text:'OK',
-                onPress:()=>{
-                    router.replace('/');
-                },
-            },
-           ]
-        );
-        } catch (error) {
-            Alert.alert('Error', 'An error occurred while saving the recipe.');
-            console.error('Error saving recipe:', error);
-        }
-        router.back();
-    };*/
-
     const save = async () => {
         try {
             if (isNew) {

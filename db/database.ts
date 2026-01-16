@@ -11,19 +11,16 @@ export const getDBConnection = async () => {
         CREATE TABLE IF NOT EXISTS recipes (
             id TEXT PRIMARY KEY NOT NULL UNIQUE,
             title TEXT NOT NULL,
-
-            ingredients TEXT NOT NULL,
-
-            --mainIngredients TEXT,
-            --otherIngredients TEXT,
-            
+            ingredients TEXT NOT NULL, 
             recipe TEXT NOT NULL,
-
             vidlink TEXT,
 
-            --totalTime INTEGER,
+            --prepTime INTEGER,
+            --cookTime INTEGER,
             --servings INTEGER,
             --difficulty TEXT,
+            isFavorite INTEGER NOT NULL DEFAULT 0,
+            --recipeNotes TEXT,
 
             category TEXT NOT NULL,
             

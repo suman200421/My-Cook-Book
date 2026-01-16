@@ -6,7 +6,7 @@ import { Alert, Pressable, Text, View } from 'react-native';
 
 export const RecipeItem = ({
    item,
-   onRemove
+   onRemove,
   }: {
     item: Recipe,
     onRemove: (id: string) => void;
@@ -31,26 +31,32 @@ export const RecipeItem = ({
     onPress={()=> router.push(`/recipe/view/${item.id}`)}
     style ={
       ({pressed})=>({
+      //flex:1,
       backgroundColor: colors.card,
-      padding:14,
+      padding:10,
+      height:200,
+      width:185,
       borderRadius:16,
       borderWidth:1,
       borderColor: colors.border,
       gap:6,
+      alignSelf: "stretch",
       opacity:pressed?0.7:1
       })
     }>
     <View style={{
-      flexDirection:'row',
+      flexDirection:'column',
       justifyContent:'space-between',
       alignItems:'center'
       }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+      <View style={{ flexDirection: "column", alignItems: "center", gap: 13 }}>
         <Text 
           numberOfLines={1}
           ellipsizeMode='tail'
-          style={{ color: colors.text, fontSize: 16, fontWeight: "700", flexShrink:1, maxWidth:"60%"}}>
+          style={{ color: colors.text, fontSize: 14, fontWeight: "700", flexShrink:1, 
+          //maxWidth:"60%"
+          }}>
           {item.title}
         </Text>
 
@@ -73,17 +79,26 @@ export const RecipeItem = ({
           {item.category}
         </Text>
       </View>
+
       </View>
-      
+
+      {/*<View style={{ flex: 1 }} />*/}
 
       <View style={{
+        position: "absolute",
+        bottom: -130,              // ✅ border aligned
+        left: 0,
+        right: 0,
         flexDirection:'row',
-        gap:8
+        //position:'absolute',
+        justifyContent:"space-between",
+        alignItems:'center'
       }}>
 
       <FavoriteButton
         recipeId={item.id}
         isFavorite={item.isFavorite}
+        size={16}
       />
 
         <Pressable
@@ -109,12 +124,12 @@ export const RecipeItem = ({
         </Pressable>
       </View>
     </View>
-    <Text numberOfLines={1} style= {{color: colors.sub, fontSize:14}}>
+    {/*<Text numberOfLines={1} style= {{color: colors.sub, fontSize:14}}>
       {item.ingredients}
-    </Text>
-    <Text style= {{color: colors.sub, fontSize:12}}>
+    </Text>*/}
+    {/*<Text style= {{color: colors.sub, fontSize:12}}>
       {timeLabel}
-    </Text>
+    </Text>*/}
     </Pressable>
     //</Link>
   );

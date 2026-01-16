@@ -140,6 +140,11 @@ export default function Index() {
         padding:16,
         gap:12
       }}
+      key="grid"
+      numColumns={2}
+      columnWrapperStyle={{
+        gap:12
+      }}
       data={filteredRecipes}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (

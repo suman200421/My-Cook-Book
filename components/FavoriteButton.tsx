@@ -33,7 +33,7 @@ const FavoriteButton = ({
           color: isFavorite ? colors.accent : colors.sub,
         }}
       >
-        {isFavorite ? "❤️" : "🤍"}
+        {isFavorite ? "🧡" : "🤍"}
       </Text>
     </Pressable>
   );

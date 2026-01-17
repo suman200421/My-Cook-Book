@@ -16,7 +16,7 @@ const DeleteButton = ({ onConfirm, label = "🗑️" }: DeleteButtonProps) => {
           [
             { text: "Cancel", style: "cancel" },
             {
-              text: label,
+              text: 'delete',
               style: "destructive",
               onPress: onConfirm,
             },
@@ -26,9 +26,12 @@ const DeleteButton = ({ onConfirm, label = "🗑️" }: DeleteButtonProps) => {
     >
       <Text
         style={{
-          fontSize: 13,
-          color: "red",
-          fontWeight: "600",
+            padding:6,
+            borderRadius:20,
+            fontSize: 18,
+            color: "red",
+            fontWeight: "600",
+            //justifyContent:"center"
         }}
       >
         {label}

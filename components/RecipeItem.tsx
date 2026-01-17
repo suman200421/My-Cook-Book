@@ -1,9 +1,10 @@
-import FavoriteButton from "@/components/FavoriteButton";
 import { colors } from '@/lib/colors';
 import { Recipe } from '@/types';
 import { router } from 'expo-router';
 import { useState } from "react";
-import { Alert, Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
+import DeleteButton from './DeleteButton';
+import FavoriteButton from './FavoriteButton';
 
 
 
@@ -167,7 +168,7 @@ export const RecipeItem = ({
         </Pressable>
       </View>*/}
 
-      {menuOpen && (
+      {/*{menuOpen && (
         <View
           style={{
             position: "absolute",
@@ -182,7 +183,7 @@ export const RecipeItem = ({
             elevation: 5, // Android shadow
           }}
         >
-          {/* Favorite */}
+          
           <View
             style={{
               flexDirection: "row",
@@ -198,10 +199,10 @@ export const RecipeItem = ({
             />
           </View>
 
-          {/* Divider */}
+          
           <View style={{ height: 1, backgroundColor: colors.border }} />
 
-          {/* Remove */}
+          
           <Pressable
             onPress={() => {
               setMenuOpen(false);
@@ -225,7 +226,55 @@ export const RecipeItem = ({
             </Text>
           </Pressable>
               </View>
-            )}
+            )}*/}
+      {menuOpen && (
+  <View
+    style={{
+      position: "absolute",
+      top: 34,
+      right: 6,
+      backgroundColor: colors.card,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: colors.border,
+      paddingVertical: 4,
+      zIndex: 20,
+      elevation: 5,
+    }}
+  >
+    {/* Favorite */}
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        gap: 8,
+      }}
+    >
+      <FavoriteButton
+        recipeId={item.id}
+        isFavorite={item.isFavorite}
+      />
+    </View>
+
+    {/* Divider */}
+    <View style={{ height: 1, backgroundColor: colors.border }} />
+
+    {/* Remove */}
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        gap: 8,
+      }}
+    >
+    <DeleteButton onConfirm={() => onRemove(item.id)} />
+    </View>
+  </View>
+)}
 
       
     </View>

@@ -8,8 +8,8 @@ export type Recipe={
 
     isFavorite?:boolean;
     //servings?:number;
-    //prepTime?:number;
-    //cookTime?:number;
+    prepTime?:number;
+    cookTime?:number;
     //difficulty?:"Easy" | "Medium" | "Hard";
     //recipeNotes:string;
 

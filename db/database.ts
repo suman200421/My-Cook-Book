@@ -4,7 +4,7 @@ export let db: SQLite.SQLiteDatabase | null = null;
 
 export const getDBConnection = async () => {
   if (!db) {
-    db = await SQLite.openDatabaseAsync('recipesrn.db');
+    db = await SQLite.openDatabaseAsync('recipesrn_v2.db');
 
     await db.execAsync(
       `
@@ -14,15 +14,18 @@ export const getDBConnection = async () => {
             ingredients TEXT NOT NULL, 
             recipe TEXT NOT NULL,
             vidlink TEXT,
-
-            --prepTime INTEGER,
-            --cookTime INTEGER,
-            --servings INTEGER,
-            --difficulty TEXT,
+            
             isFavorite INTEGER NOT NULL DEFAULT 0,
-            --recipeNotes TEXT,
 
             category TEXT NOT NULL,
+
+            prepTime INTEGER,
+            cookTime INTEGER,
+
+            --servings INTEGER,
+            --difficulty TEXT,
+
+            --recipeNotes TEXT,
             
             createdAt INTEGER NOT NULL,
             updatedAt INTEGER NOT NULL

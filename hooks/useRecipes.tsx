@@ -4,8 +4,8 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 
 type RecipesContextType={
     recipes: Recipe[];
-    addRecipe: (title:string, ingredients:string, recipe:string, vidlink:string, category: Recipe["category"]) => Promise<Recipe>;
-    updatedRecipe: (id:string, title:string, ingredients:string, recipe:string, vidlink:string, category: Recipe["category"]) => Promise<Recipe|null>;
+    addRecipe: (title:string, ingredients:string, recipe:string, vidlink:string, category: Recipe["category"], prepTime:number,cooktime:number) => Promise<Recipe>;
+    updatedRecipe: (id:string, title:string, ingredients:string, recipe:string, vidlink:string, category: Recipe["category"], prepTime:number, cooktime:number) => Promise<Recipe|null>;
     deleteRecipe: (id:string) => Promise<void>;
     toggleFavorite:(id:string)=>Promise<void>;
     //getRecipeById: (id:string) => Promise<Recipe | null>;
@@ -37,7 +37,9 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
         ingredients:string,
         recipe:string,
         vidlink:string,
-        category:Recipe['category']
+        category:Recipe['category'],
+        prepTime:number,
+        cookTime:number
     ): Promise<Recipe> => {
 
         const db = await getDBConnection();
@@ -51,12 +53,14 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
             vidlink: vidlink.trim(),
             category,
             isFavorite:false,
+            prepTime,
+            cookTime,
             createdAt: now,
             updatedAt: now,
         };
 
         await db.runAsync(
-        `INSERT INTO recipes (id, title, ingredients, recipe, vidlink, category, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
+        `INSERT INTO recipes (id, title, ingredients, recipe, vidlink, category, isFavorite, prepTime, cookTime, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
         [
             recipen.id,
             recipen.title,
@@ -65,6 +69,8 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
             recipen.vidlink,
             recipen.category,
             recipen.isFavorite? 1 : 0,
+            prepTime??null,
+            cookTime??null,
             recipen.createdAt,
             recipen.updatedAt
         ]
@@ -81,14 +87,23 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
         ingredients: string,
         recipe: string,
         vidlink: string,
-        category: Recipe['category']
+        category: Recipe['category'],
+        prepTime:number,
+        cookTime:number
     ): Promise<Recipe | null> => {
         const db = await getDBConnection();
         const now = Date.now();
 
         await db.runAsync(
             `UPDATE recipes
-            SET title = ?, ingredients = ?, recipe = ?, vidlink = ?, category = ?, updatedAt = ?
+            SET title = ?,
+            ingredients = ?,
+            recipe = ?,
+            vidlink = ?,
+            category = ?,
+            prepTime = ?,
+            cookTime = ?,
+            updatedAt = ?
             WHERE id = ?`,
         [
             title.trim(),

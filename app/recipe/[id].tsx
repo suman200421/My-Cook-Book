@@ -30,11 +30,17 @@ const RecipeEditorScreen=()=>{
     const [ ingredients, setIngredients ] =useState(existingRecipe?.ingredients ?? '');
     const [ recipe, setRecipe ] = useState(existingRecipe?.recipe ?? '');
     const [ vidlink, setVidlink ] = useState(existingRecipe?.vidlink ?? '');
+    const [prepTime, setPrepTime] = useState("");
+    const [cookTime, setCookTime] = useState("");
 
     const isDisabled = title.length <=0 || ingredients.length <=0 || recipe.length <=0;
 
 
     const save = async () => {
+        const parsedPrepTime =
+            prepTime.trim() === "" ? 0 : Number(prepTime);
+        const parsedCookTime =
+            cookTime.trim() === "" ? 0 : Number(cookTime);
         try {
             if (isNew) {
                 await addRecipe(
@@ -42,7 +48,9 @@ const RecipeEditorScreen=()=>{
                     ingredients,
                     recipe,
                     vidlink,
-                    category
+                    category,
+                    parsedPrepTime,
+                    parsedCookTime,
                 );  
                 // ✅ After CREATE → go to Recipes list
                 Alert.alert("Success", "Recipe created successfully", [
@@ -59,7 +67,9 @@ const RecipeEditorScreen=()=>{
                 ingredients,
                 recipe,
                 vidlink,
-                category
+                category,
+                parsedPrepTime,
+                parsedCookTime,
                 );
 
                 // ✅ After EDIT → stay on VIEW page
@@ -118,7 +128,7 @@ const RecipeEditorScreen=()=>{
                 }}
             />
 
-            <View style={{ padding: 16 }}>
+            <View style={{gap: 12, padding: 16 }}>
 
                 {/* Category Input (Pressable) */}
                 <Pressable
@@ -138,6 +148,7 @@ const RecipeEditorScreen=()=>{
                         {category}
                     </Text>
                 </Pressable>
+
 
                 {/* other inputs here (ingredients, recipe, etc.) */}
 
@@ -246,6 +257,43 @@ const RecipeEditorScreen=()=>{
                     textAlignVertical:'top'
                 }}
             />
+
+            <View style={{ flexDirection: "row", gap: 12 }}>
+                    <TextInput
+                        placeholder="Prep Time (min)"
+                        value={prepTime}
+                        onChangeText={setPrepTime}
+                        keyboardType="numeric"
+                        style={{
+                            flex: 1,
+                            backgroundColor: colors.card,
+                            padding: 12,
+                            borderRadius: 12,
+                            borderWidth: 1,
+                            borderColor: colors.border,
+                            color: colors.text,
+                            fontWeight: "700",
+                        }}
+                    />
+
+                    <TextInput
+                        placeholder="Cook Time (min)"
+                        value={cookTime}
+                        onChangeText={setCookTime}
+                        keyboardType="numeric"
+                        style={{
+                        flex: 1,
+                        backgroundColor: colors.card,
+                        padding: 12,
+                        borderRadius: 12,
+                        borderWidth: 1,
+                        borderColor: colors.border,
+                        color: colors.text,
+                        fontWeight: "700",
+                        }}
+                    />
+                </View>
+
             <TextInput
                 placeholder="Optional video link for recipe"
                 placeholderTextColor={colors.sub}

@@ -82,11 +82,46 @@ export const RecipeItem = ({
 
       </View>
 
+      {(item.prepTime || item.cookTime) && (
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 10,
+            marginTop: 6,
+          }}
+        >
+    {item.prepTime != null && (
+      <Text
+        style={{
+          fontSize: 11,
+          color: colors.sub,
+          fontWeight: "600",
+        }}
+      >
+        ⏱ {item.prepTime} min
+      </Text>
+    )}
+
+    {item.cookTime != null && (
+      <Text
+        style={{
+          fontSize: 11,
+          color: colors.sub,
+          fontWeight: "600",
+        }}
+      >
+        🔥 {item.cookTime} min
+      </Text>
+    )}
+  </View>
+)}
+
+
       {/*<View style={{ flex: 1 }} />*/}
 
       <View style={{
         position: "absolute",
-        bottom: -130,              // ✅ border aligned
+        bottom: -105,              // ✅ border aligned
         left: 0,
         right: 0,
         flexDirection:'row',

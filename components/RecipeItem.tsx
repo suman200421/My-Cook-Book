@@ -45,11 +45,9 @@ export const RecipeItem = ({
         right: 6,
         width:30,
         height:30,
-        //padding: 6,
         zIndex: 10,
         borderRadius:30,
         alignItems: "center",
-        //justifyContent: "center",
         backgroundColor:colors.border,
       }}
     >
@@ -130,7 +128,7 @@ export const RecipeItem = ({
       )}
 
 
-      <View style={{
+      {/*<View style={{
         position: "absolute",
         bottom: -105,
         left: 0,
@@ -167,7 +165,69 @@ export const RecipeItem = ({
             🗑️
           </Text>
         </Pressable>
-      </View>
+      </View>*/}
+
+      {menuOpen && (
+        <View
+          style={{
+            position: "absolute",
+            top: 34,
+            right: 6,
+            backgroundColor: colors.card,
+            borderRadius: 8,
+            borderWidth: 1,
+            borderColor: colors.border,
+            paddingVertical: 4,
+            zIndex: 20,
+            elevation: 5, // Android shadow
+          }}
+        >
+          {/* Favorite */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              gap: 8,
+            }}
+          >
+            <FavoriteButton
+              recipeId={item.id}
+              isFavorite={item.isFavorite}
+            />
+          </View>
+
+          {/* Divider */}
+          <View style={{ height: 1, backgroundColor: colors.border }} />
+
+          {/* Remove */}
+          <Pressable
+            onPress={() => {
+              setMenuOpen(false);
+              Alert.alert(
+                "Delete Recipe",
+                "Are you sure?",
+                [
+                  { text: "Cancel", style: "cancel" },
+                  {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: () => onRemove(item.id),
+                  },
+                ]
+              );
+            }}
+            style={{ paddingHorizontal: 12, paddingVertical: 8 }}
+          >
+            <Text style={{ fontSize: 13, color: "red" }}>
+              Remove
+            </Text>
+          </Pressable>
+              </View>
+            )}
+
+      
     </View>
     </Pressable>
     //</Link>

@@ -2,7 +2,10 @@ import FavoriteButton from "@/components/FavoriteButton";
 import { colors } from '@/lib/colors';
 import { Recipe } from '@/types';
 import { router } from 'expo-router';
+import { useState } from "react";
 import { Alert, Pressable, Text, View } from 'react-native';
+
+
 
 export const RecipeItem = ({
    item,
@@ -12,19 +15,7 @@ export const RecipeItem = ({
     onRemove: (id: string) => void;
   }) => {
 
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleString(undefined, {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
-  };
-
-  const isUpdated = item.updatedAt !== item.createdAt;
-
-  const timeLabel = isUpdated
-    ? `Updated: ${formatDate(item.updatedAt)}`
-    : `Created: ${formatDate(item.createdAt)}`;
-
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <Pressable 
@@ -44,6 +35,28 @@ export const RecipeItem = ({
       opacity:pressed?0.7:1
       })
     }>
+
+    <Pressable
+      onPress={() => setMenuOpen((v) => !v)}
+      hitSlop={10}
+      style={{
+        position: "absolute",
+        top: 6,
+        right: 6,
+        width:30,
+        height:30,
+        //padding: 6,
+        zIndex: 10,
+        borderRadius:30,
+        alignItems: "center",
+        //justifyContent: "center",
+        backgroundColor:colors.border,
+      }}
+    >
+      <Text style={{ fontSize: 20,fontWeight:900, color: colors.sub }}>⋮</Text>
+    </Pressable>
+
+
     <View style={{
       flexDirection:'column',
       justifyContent:'space-between',
@@ -55,7 +68,7 @@ export const RecipeItem = ({
           numberOfLines={1}
           ellipsizeMode='tail'
           style={{ color: colors.text, fontSize: 14, fontWeight: "700", flexShrink:1, 
-          //maxWidth:"60%"
+          //maxWidth:"80%"
           }}>
           {item.title}
         </Text>
@@ -90,42 +103,39 @@ export const RecipeItem = ({
             marginTop: 6,
           }}
         >
-    {item.prepTime != null && (
-      <Text
-        style={{
-          fontSize: 11,
-          color: colors.sub,
-          fontWeight: "600",
-        }}
-      >
-        ⏱ {item.prepTime} min
-      </Text>
-    )}
+          {item.prepTime != null && (
+            <Text
+              style={{
+                fontSize: 11,
+                color: colors.sub,
+                fontWeight: "600",
+              }}
+            >
+              ⏱ {item.prepTime} min
+            </Text>
+          )}
 
-    {item.cookTime != null && (
-      <Text
-        style={{
-          fontSize: 11,
-          color: colors.sub,
-          fontWeight: "600",
-        }}
-      >
-        🔥 {item.cookTime} min
-      </Text>
-    )}
-  </View>
-)}
+          {item.cookTime != null && (
+            <Text
+              style={{
+                fontSize: 11,
+                color: colors.sub,
+                fontWeight: "600",
+              }}
+            >
+              🔥 {item.cookTime} min
+            </Text>
+          )}
+        </View>
+      )}
 
-
-      {/*<View style={{ flex: 1 }} />*/}
 
       <View style={{
         position: "absolute",
-        bottom: -105,              // ✅ border aligned
+        bottom: -105,
         left: 0,
         right: 0,
         flexDirection:'row',
-        //position:'absolute',
         justifyContent:"space-between",
         alignItems:'center'
       }}>
@@ -154,17 +164,11 @@ export const RecipeItem = ({
         >
 
           <Text style={{color: colors.sub,}}>
-            Remove
+            🗑️
           </Text>
         </Pressable>
       </View>
     </View>
-    {/*<Text numberOfLines={1} style= {{color: colors.sub, fontSize:14}}>
-      {item.ingredients}
-    </Text>*/}
-    {/*<Text style= {{color: colors.sub, fontSize:12}}>
-      {timeLabel}
-    </Text>*/}
     </Pressable>
     //</Link>
   );

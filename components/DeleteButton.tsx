@@ -26,7 +26,7 @@ const DeleteButton = ({ onConfirm, label = "🗑️" }: DeleteButtonProps) => {
     >
       <Text
         style={{
-            padding:6,
+            padding:3,
             borderRadius:20,
             fontSize: 18,
             color: "red",

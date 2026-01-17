@@ -33,6 +33,7 @@ export const RecipeItem = ({
       borderColor: colors.border,
       gap:6,
       alignSelf: "stretch",
+      //paddingBottom:-34,
       opacity:pressed?0.7:1
       })
     }>
@@ -97,15 +98,20 @@ export const RecipeItem = ({
       {(item.prepTime || item.cookTime) && (
         <View
           style={{
+            position: "absolute",
+            bottom: -130,
+            left: 10,
+            right: 10,
             flexDirection: "row",
-            gap: 10,
-            marginTop: 6,
+            //gap:5,
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
           {item.prepTime != null && (
             <Text
               style={{
-                fontSize: 11,
+                fontSize: 12.5,
                 color: colors.sub,
                 fontWeight: "600",
               }}
@@ -117,7 +123,7 @@ export const RecipeItem = ({
           {item.cookTime != null && (
             <Text
               style={{
-                fontSize: 11,
+                fontSize: 12.5,
                 color: colors.sub,
                 fontWeight: "600",
               }}
@@ -128,47 +134,7 @@ export const RecipeItem = ({
         </View>
       )}
 
-
-      {/*<View style={{
-        position: "absolute",
-        bottom: -105,
-        left: 0,
-        right: 0,
-        flexDirection:'row',
-        justifyContent:"space-between",
-        alignItems:'center'
-      }}>
-
-      <FavoriteButton
-        recipeId={item.id}
-        isFavorite={item.isFavorite}
-        size={16}
-      />
-
-        <Pressable
-          onPress={() =>
-            Alert.alert(
-              "Delete Recipe",
-              "Are you sure you want to delete this recipe?",
-              [
-                { text: "Cancel", style: "cancel" },
-                {
-                  text: "Delete",
-                  style: "destructive",
-                  onPress: () => onRemove(item.id),
-                },
-              ]
-            )
-          }
-        >
-
-          <Text style={{color: colors.sub,}}>
-            🗑️
-          </Text>
-        </Pressable>
-      </View>*/}
-
-      {/*{menuOpen && (
+      {menuOpen && (
         <View
           style={{
             position: "absolute",
@@ -180,10 +146,10 @@ export const RecipeItem = ({
             borderColor: colors.border,
             paddingVertical: 4,
             zIndex: 20,
-            elevation: 5, // Android shadow
+            elevation: 5,
           }}
         >
-          
+          {/* Favorite */}
           <View
             style={{
               flexDirection: "row",
@@ -199,84 +165,23 @@ export const RecipeItem = ({
             />
           </View>
 
-          
+          {/* Divider */}
           <View style={{ height: 1, backgroundColor: colors.border }} />
 
-          
-          <Pressable
-            onPress={() => {
-              setMenuOpen(false);
-              Alert.alert(
-                "Delete Recipe",
-                "Are you sure?",
-                [
-                  { text: "Cancel", style: "cancel" },
-                  {
-                    text: "Delete",
-                    style: "destructive",
-                    onPress: () => onRemove(item.id),
-                  },
-                ]
-              );
+          {/* Remove */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              gap: 8,
             }}
-            style={{ paddingHorizontal: 12, paddingVertical: 8 }}
           >
-            <Text style={{ fontSize: 13, color: "red" }}>
-              Remove
-            </Text>
-          </Pressable>
-              </View>
-            )}*/}
-      {menuOpen && (
-  <View
-    style={{
-      position: "absolute",
-      top: 34,
-      right: 6,
-      backgroundColor: colors.card,
-      borderRadius: 8,
-      borderWidth: 1,
-      borderColor: colors.border,
-      paddingVertical: 4,
-      zIndex: 20,
-      elevation: 5,
-    }}
-  >
-    {/* Favorite */}
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        gap: 8,
-      }}
-    >
-      <FavoriteButton
-        recipeId={item.id}
-        isFavorite={item.isFavorite}
-      />
-    </View>
-
-    {/* Divider */}
-    <View style={{ height: 1, backgroundColor: colors.border }} />
-
-    {/* Remove */}
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        gap: 8,
-      }}
-    >
-    <DeleteButton onConfirm={() => onRemove(item.id)} />
-    </View>
-  </View>
-)}
-
-      
+          <DeleteButton onConfirm={() => onRemove(item.id)} />
+          </View>
+        </View>
+      )}  
     </View>
     </Pressable>
     //</Link>

@@ -20,7 +20,7 @@ const FavoriteButton = ({
       onPress={() => toggleFavorite(recipeId)}
       hitSlop={10}
       style={{
-        padding: 6,
+        padding: 3,
         borderRadius: 20,
         backgroundColor: isFavorite
           ? colors.accent + "22"

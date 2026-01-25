@@ -2,6 +2,7 @@ import AppFooter from "@/components/AppFooter";
 import { useRecipes } from "@/hooks/useRecipes";
 import { colors } from "@/lib/colors";
 import { INGREDIENTS } from '@/lib/ingredients';
+import Entypo from '@expo/vector-icons/Entypo';
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, TextInput, View } from "react-native";
@@ -346,7 +347,13 @@ const RecipeEditorScreen=()=>{
                         setIngredients((prev) => prev.filter((_, i) => i !== index))
                     }
                     >
-                    <Text style={{ color: "red", fontSize: 18 }}>✕</Text>
+                    <View
+                    style={{padding: 6,
+                        borderRadius:6,
+                    }}
+                    >
+                        <Entypo name="cross" size={24} color={colors.accent} />
+                    </View>
                     </Pressable>
                 </View>
 

@@ -63,7 +63,7 @@ export const RecipeItem = ({
       alignItems:'center'
       }}
     >
-      <View style={{ flexDirection: "column", alignItems: "center", gap: 13 }}>
+      <View style={{alignItems: "center",marginTop:20}}>
         <Text 
           numberOfLines={1}
           ellipsizeMode='tail'
@@ -73,7 +73,7 @@ export const RecipeItem = ({
           {item.title}
         </Text>
 
-      <View
+     {/*<View
         style={{
           paddingHorizontal: 8,
           paddingVertical: 2,
@@ -91,7 +91,7 @@ export const RecipeItem = ({
         >
           {item.category}
         </Text>
-      </View>
+      </View>*/}
 
       </View>
 

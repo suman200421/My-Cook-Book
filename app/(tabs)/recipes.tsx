@@ -1,12 +1,12 @@
 import { RecipeItem } from "@/components/RecipeItem";
 import { useRecipes } from "@/hooks/useRecipes";
 import { colors } from "@/lib/colors";
-import { Link, Stack } from "expo-router";
+import { Link } from "expo-router";
 import { useState } from "react";
 import { FlatList, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-
-export default function Index() {
+export default function Recipe() {
   const { recipes, deleteRecipe} = useRecipes();
 
   const[search, setSearch]= useState('');
@@ -43,16 +43,14 @@ export default function Index() {
 
 
   return (
+    <SafeAreaView 
+    edges={["left","right","bottom"]}
+    style={{flex:1,backgroundColor:colors.bg}}>
     <View
       style={{
         flex: 1
       }}
     >
-    <Stack.Screen
-        options={{
-          title: 'Recipes'
-        }}
-    />
 
       <View
         style={{
@@ -156,6 +154,6 @@ export default function Index() {
     />  
 
     </View>
-    
+  </SafeAreaView>
   );
 }

@@ -333,6 +333,12 @@ const RecipeEditorScreen=()=>{
                     </Text>
                 </Pressable>
             </AppFooter>
+            {/*<AppFooter>
+                <Pressable onPress={save}>
+                    <Text>Save</Text>
+                </Pressable>
+            </AppFooter>*/}
+
         </View>
     </View>;
 };

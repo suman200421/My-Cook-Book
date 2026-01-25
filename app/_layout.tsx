@@ -1,4 +1,4 @@
-import { RecipesProvider } from "@/hooks/useRecipes";
+/*import { RecipesProvider } from "@/hooks/useRecipes";
 import { colors } from "@/lib/colors";
 import { Stack } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -14,6 +14,7 @@ export default function RootLayout() {
       contentStyle: {backgroundColor : colors.bg}
       }}
     >
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen 
         name="welcome" 
         options={{headerShown: false}} 
@@ -25,5 +26,35 @@ export default function RootLayout() {
     </Stack>
     </RecipesProvider>
   </SafeAreaProvider>
+  );
+}*/
+import { RecipesProvider } from "@/hooks/useRecipes";
+import { colors } from "@/lib/colors";
+import { Stack } from "expo-router";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
+export default function RootLayout() {
+  return (
+    <SafeAreaProvider>
+      <RecipesProvider>
+        <Stack
+          screenOptions={{
+            headerStyle: { backgroundColor: colors.bg },
+            headerTitleStyle: { color: colors.text },
+            contentStyle: { backgroundColor: colors.bg },
+          }}
+        >
+          {/* Tabs handle their own header/footer */}
+          <Stack.Screen
+            name="(tabs)"
+            options={{ headerShown: false }}
+          />
+
+          {/* Fullscreen pages */}
+          <Stack.Screen name="recipe/[id]" />
+          <Stack.Screen name="recipe/view/[id]" />
+        </Stack>
+      </RecipesProvider>
+    </SafeAreaProvider>
   );
 }

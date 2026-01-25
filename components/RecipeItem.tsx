@@ -1,12 +1,11 @@
 import { colors } from '@/lib/colors';
 import { Recipe } from '@/types';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { useState } from "react";
-import { Pressable, Text, View } from 'react-native';
+import { Image, Pressable, Text, View } from 'react-native';
 import DeleteButton from './DeleteButton';
 import FavoriteButton from './FavoriteButton';
-
-
 
 export const RecipeItem = ({
    item,
@@ -26,7 +25,7 @@ export const RecipeItem = ({
       //flex:1,
       backgroundColor: colors.card,
       padding:10,
-      height:200,
+      height:190,
       width:185,
       borderRadius:16,
       borderWidth:1,
@@ -63,73 +62,70 @@ export const RecipeItem = ({
       alignItems:'center'
       }}
     >
-      <View style={{alignItems: "center",marginTop:20}}>
+      <Image
+        source={require("@/assets/images/icon.png")}
+        resizeMode="cover"
+        style={{
+          width: "100%",
+          height: 120,
+          borderRadius: 12,
+          marginBottom:0,
+        }}
+      />
+
+
+      <View style={{marginTop:"auto",alignItems:"flex-start"}}>
         <Text 
           numberOfLines={1}
-          ellipsizeMode='tail'
-          style={{ color: colors.text, fontSize: 14, fontWeight: "700", flexShrink:1, 
-          //maxWidth:"80%"
+          //ellipsizeMode='tail'
+          style={{
+            color: colors.text,
+            fontSize: 14,
+            fontWeight: "700", 
+            flexShrink:1, 
+            textAlign:'left',
           }}>
           {item.title}
         </Text>
-
-     {/*<View
-        style={{
-          paddingHorizontal: 8,
-          paddingVertical: 2,
-          borderRadius: 8,
-          backgroundColor: colors.border,
-          flexShrink:0,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 12,
-            color: colors.sub,
-            fontWeight: "600",
-          }}
-        >
-          {item.category}
-        </Text>
-      </View>*/}
-
       </View>
 
       {(item.prepTime || item.cookTime) && (
         <View
           style={{
             position: "absolute",
-            bottom: -130,
+            bottom: -35,
             left: 10,
             right: 10,
             flexDirection: "row",
-            //gap:5,
+            gap:5,
             justifyContent: "space-between",
             alignItems: "center",
           }}
         >
           {item.prepTime != null && (
-            <Text
-              style={{
-                fontSize: 12.5,
-                color: colors.sub,
-                fontWeight: "600",
-              }}
-            >
-              ⏱ {item.prepTime} min
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+              <Ionicons
+                name="time-outline"
+                size={19}
+                color={colors.sub}
+              />
+              <Text style={{ fontSize: 12, color: colors.sub }}>
+                {item.prepTime} min
+              </Text>
+            </View>
           )}
 
           {item.cookTime != null && (
-            <Text
-              style={{
-                fontSize: 12.5,
-                color: colors.sub,
-                fontWeight: "600",
-              }}
-            >
-              🔥 {item.cookTime} min
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+              <Ionicons
+                name="flame-outline"
+                size={19}
+                color={colors.sub}
+              />
+              <Text style={{ fontSize: 12, color: colors.sub }}>
+                {item.cookTime} min
+              </Text>
+            </View>
           )}
         </View>
       )}

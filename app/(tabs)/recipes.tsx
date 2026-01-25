@@ -3,10 +3,20 @@ import { useRecipes } from "@/hooks/useRecipes";
 import { colors } from "@/lib/colors";
 import { Link } from "expo-router";
 import { useState } from "react";
-import { FlatList, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { FlatList, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+
+
 export default function Recipe() {
+
+  const { width } = useWindowDimensions();
+
+  const numColumns =
+    width < 360 ? 1 :
+    width < 700 ? 2 :
+    3;
+
   const { recipes, deleteRecipe} = useRecipes();
 
   const[search, setSearch]= useState('');
@@ -133,26 +143,24 @@ export default function Recipe() {
         Add Recipes
       </Text>
       </Link>
-    <FlatList
-      contentContainerStyle ={{
-        padding:16,
-        gap:12
-      }}
-      key="grid"
-      numColumns={2}
-      columnWrapperStyle={{
-        gap:12
-      }}
-      data={filteredRecipes}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <RecipeItem
-          item={item}
-          onRemove={handleRemove}
-        />
-      )}
-    />  
-
+      <FlatList
+        data={filteredRecipes}
+        numColumns={numColumns}
+        key={numColumns}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{
+          alignItems: "flex-start", // 🔒 THIS fixes last row
+          paddingHorizontal: 5,
+          paddingTop:8,
+          paddingBottom: 100,
+        }}
+        columnWrapperStyle={{ justifyContent: "flex-start" }}
+        renderItem={({ item }) => (
+          <View style={{ marginRight: 12, marginBottom: 14 }}>
+            <RecipeItem item={item} onRemove={handleRemove} />
+          </View>
+        )}
+      />
     </View>
   </SafeAreaView>
   );

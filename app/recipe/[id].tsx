@@ -1,10 +1,10 @@
 import AppFooter from "@/components/AppFooter";
 import { useRecipes } from "@/hooks/useRecipes";
 import { colors } from "@/lib/colors";
+import { INGREDIENTS } from '@/lib/ingredients';
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, TextInput, View } from "react-native";
-
 
 const RecipeEditorScreen=()=>{
     const { id } =useLocalSearchParams();
@@ -27,7 +27,18 @@ const RecipeEditorScreen=()=>{
 
 
     const [ title, setTitle ] =useState(existingRecipe?.title ?? "");
-    const [ ingredients, setIngredients ] =useState(existingRecipe?.ingredients ?? '');
+
+    //const [ ingredients, setIngredients ] =useState(existingRecipe?.ingredients ?? '');
+
+    const [ingredients, setIngredients] = useState<string[]>(
+        existingRecipe
+            ? existingRecipe.ingredients
+                .split(",")
+                .map((i) => i.trim())
+            : []
+    );
+
+    
     const [ recipe, setRecipe ] = useState(existingRecipe?.recipe ?? '');
     const [ vidlink, setVidlink ] = useState(existingRecipe?.vidlink ?? '');
     const [prepTime, setPrepTime] = useState("");
@@ -41,11 +52,16 @@ const RecipeEditorScreen=()=>{
             prepTime.trim() === "" ? 0 : Number(prepTime);
         const parsedCookTime =
             cookTime.trim() === "" ? 0 : Number(cookTime);
+        const ingredientsString = ingredients
+            .map((i) => i.trim())
+            .filter(Boolean)
+            .join(", ");
+
         try {
             if (isNew) {
                 await addRecipe(
                     title,
-                    ingredients,
+                    ingredientsString,//changed
                     recipe,
                     vidlink,
                     category,
@@ -64,7 +80,7 @@ const RecipeEditorScreen=()=>{
                 await updatedRecipe(
                 id,
                 title,
-                ingredients,
+                ingredientsString,//changed
                 recipe,
                 vidlink,
                 category,
@@ -110,7 +126,16 @@ const RecipeEditorScreen=()=>{
             title: isNew? "Create Recipe" : "Edit Recipe",
             headerBackVisible: false,
         }}/>
-        <View style={{padding: 16, gap: 12, flex: 1}}>
+        <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={{
+            padding: 16,
+            paddingBottom: 120, // ✅ space for footer
+            }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+        >
+            <View style={{ marginBottom: 10 }}>
             <TextInput
                 placeholder="Recipe Name"
                 placeholderTextColor={colors.sub}
@@ -127,8 +152,9 @@ const RecipeEditorScreen=()=>{
                     fontWeight:'700'
                 }}
             />
+            </View>
 
-            <View style={{gap: 12, padding: 16 }}>
+            <View style={{gap: 12, padding: 16, marginBottom: 5}}>
 
                 {/* Category Input (Pressable) */}
                 <Pressable
@@ -221,22 +247,107 @@ const RecipeEditorScreen=()=>{
 
             </View>
 
-            <TextInput
-                placeholder="Recipe Ingredients(Separated Using comma)"
-                placeholderTextColor={colors.sub}
-                value={ingredients}
-                onChangeText={setIngredients}
-                style={{
-                    backgroundColor:colors.card,
-                    color:colors.text,
-                    paddingHorizontal:14,
-                    paddingVertical:12,
-                    borderRadius:12,
-                    borderWidth:1,
-                    borderColor:colors.border,
-                    fontWeight:'700'
-                }}
-            />
+            {/* INGREDIENTS SECTION */}
+
+            <Pressable
+            onPress={() => setIngredients((prev) => [...prev, ""])}
+            style={{
+                marginBottom: 12,
+                paddingVertical: 10,
+                paddingHorizontal: 12,
+                borderRadius: 10,
+                backgroundColor: colors.card,
+                borderWidth: 1,
+                borderColor: colors.border,
+                marginTop: 8,
+            }}
+            >
+            <Text style={{ color: colors.text, fontWeight: "600" }}>
+                + Add Ingredient
+            </Text>
+            </Pressable>
+
+            {/* INGREDIENT INPUT ROWS */}
+            {ingredients.map((ingredient, index) => {
+            const suggestions = INGREDIENTS.filter((item) =>
+                item.toLowerCase().startsWith(ingredient.toLowerCase())
+            ).slice(0, 5);
+
+            return (
+                <View key={index} style={{ marginTop: 8 }}>
+                {/* INPUT ROW */}
+                <View
+                    style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 8,
+                    }}
+                >
+                    <TextInput
+                    value={ingredient}
+                    placeholder={`Ingredient ${index + 1}`}
+                    placeholderTextColor={colors.sub}
+                    onChangeText={(text) => {
+                        const updated = [...ingredients];
+                        updated[index] = text;
+                        setIngredients(updated);
+                    }}
+                    style={{
+                        flex: 1,
+                        backgroundColor: colors.card,
+                        borderRadius: 10,
+                        borderWidth: 1,
+                        borderColor: colors.border,
+                        paddingHorizontal: 12,
+                        paddingVertical: 10,
+                        color: colors.text,
+                    }}
+                    />
+
+                    {/* REMOVE */}
+                    <Pressable
+                    onPress={() =>
+                        setIngredients((prev) => prev.filter((_, i) => i !== index))
+                    }
+                    >
+                    <Text style={{ color: "red", fontSize: 18 }}>✕</Text>
+                    </Pressable>
+                </View>
+
+                {/* SUGGESTIONS DROPDOWN */}
+                {ingredient.length > 0 && suggestions.length > 0 && (
+                    <View
+                    style={{
+                        backgroundColor: colors.card,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: colors.border,
+                        marginTop: 4,
+                    }}
+                    >
+                    {suggestions.map((item) => (
+                        <Pressable
+                        key={item}
+                        onPress={() => {
+                            const updated = [...ingredients];
+                            updated[index] = item;
+                            setIngredients(updated);
+                        }}
+                        style={{
+                            paddingVertical: 8,
+                            paddingHorizontal: 12,
+                        }}
+                        >
+                        <Text style={{ color: colors.text }}>{item}</Text>
+                        </Pressable>
+                    ))}
+                    </View>
+                )}
+                </View>
+            );
+            })}
+
+            <View style={{ marginBottom: 16 }}>
             <TextInput
                 placeholder="Write the step by step process"
                 placeholderTextColor={colors.sub}
@@ -244,6 +355,7 @@ const RecipeEditorScreen=()=>{
                 onChangeText={setRecipe}
                 multiline
                 style={{
+                    height:350,
                     flex:1,
                     //minHeight:180,
                     backgroundColor:colors.card,
@@ -257,8 +369,9 @@ const RecipeEditorScreen=()=>{
                     textAlignVertical:'top'
                 }}
             />
+            </View>
 
-            <View style={{ flexDirection: "row", gap: 12 }}>
+            <View style={{ flexDirection: "row", gap: 12, marginBottom: 16 }}>
                     <TextInput
                         placeholder="Prep Time (min)"
                         value={prepTime}
@@ -310,6 +423,7 @@ const RecipeEditorScreen=()=>{
                     fontWeight:'700'
                 }}
             />
+        </ScrollView>
             <AppFooter>
                 <Pressable style={{
                     marginBottom:12}}
@@ -325,22 +439,17 @@ const RecipeEditorScreen=()=>{
                             color:'#fff',
                             fontWeight:'600',
                             overflow:"hidden",
-                            marginRight:12,
-                            marginTop:12,
+                            marginRight:10,
+                            marginTop:5,
+                            marginBottom:-25,
                             opacity: isDisabled ? 0.5 : 1
                         }}>
                             Save
                     </Text>
                 </Pressable>
             </AppFooter>
-            {/*<AppFooter>
-                <Pressable onPress={save}>
-                    <Text>Save</Text>
-                </Pressable>
-            </AppFooter>*/}
-
         </View>
-    </View>;
+    ;
 };
 
 

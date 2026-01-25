@@ -38,7 +38,8 @@ const RecipeEditorScreen=()=>{
             : []
     );
 
-    
+    const [activeIngredientIndex, setActiveIngredientIndex] = useState<number | null>(null);
+
     const [ recipe, setRecipe ] = useState(existingRecipe?.recipe ?? '');
     const [ vidlink, setVidlink ] = useState(existingRecipe?.vidlink ?? '');
     const [prepTime, setPrepTime] = useState("");
@@ -287,6 +288,10 @@ const RecipeEditorScreen=()=>{
                     value={ingredient}
                     placeholder={`Ingredient ${index + 1}`}
                     placeholderTextColor={colors.sub}
+
+                    onFocus={() => setActiveIngredientIndex(index)}
+                    onBlur={() => setActiveIngredientIndex(null)}
+
                     onChangeText={(text) => {
                         const updated = [...ingredients];
                         updated[index] = text;
@@ -315,7 +320,11 @@ const RecipeEditorScreen=()=>{
                 </View>
 
                 {/* SUGGESTIONS DROPDOWN */}
-                {ingredient.length > 0 && suggestions.length > 0 && (
+                {activeIngredientIndex === index &&
+                ingredient.length > 0 &&
+                suggestions.length > 0 &&
+                !suggestions.includes(ingredient) && (
+
                     <View
                     style={{
                         backgroundColor: colors.card,
@@ -332,6 +341,7 @@ const RecipeEditorScreen=()=>{
                             const updated = [...ingredients];
                             updated[index] = item;
                             setIngredients(updated);
+                            setActiveIngredientIndex(null);
                         }}
                         style={{
                             paddingVertical: 8,

@@ -1,5 +1,6 @@
 import { useRecipes } from "@/hooks/useRecipes";
 import { colors } from "@/lib/colors";
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pressable, Text } from "react-native";
 
 type Props = {
@@ -7,6 +8,7 @@ type Props = {
   isFavorite?: boolean;
   size?: number;
 };
+
 
 const FavoriteButton = ({
   recipeId,
@@ -33,7 +35,12 @@ const FavoriteButton = ({
           color: isFavorite ? colors.accent : colors.sub,
         }}
       >
-        {isFavorite ? "🧡" : "🤍"}
+        <Ionicons
+          name="heart"
+          size={24}
+          color={isFavorite ? "#ff3b30" : "#999"}
+        />
+
       </Text>
     </Pressable>
   );

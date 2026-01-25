@@ -1,12 +1,12 @@
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Alert, Pressable, Text } from "react-native";
 //import { colors } from "@/lib/colors";
 
 type DeleteButtonProps = {
   onConfirm: () => void;
-  label?: string;
 };
 
-const DeleteButton = ({ onConfirm, label = "🗑️" }: DeleteButtonProps) => {
+const DeleteButton = ({ onConfirm}: DeleteButtonProps) => {
   return (
     <Pressable
       onPress={() =>
@@ -34,7 +34,7 @@ const DeleteButton = ({ onConfirm, label = "🗑️" }: DeleteButtonProps) => {
             //justifyContent:"center"
         }}
       >
-        {label}
+        <MaterialCommunityIcons name="delete-outline" size={24} color="black" />
       </Text>
     </Pressable>
   );

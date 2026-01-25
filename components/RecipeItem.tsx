@@ -1,5 +1,6 @@
 import { colors } from '@/lib/colors';
 import { Recipe } from '@/types';
+import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { useState } from "react";
@@ -44,15 +45,16 @@ export const RecipeItem = ({
         position: "absolute",
         top: 6,
         right: 6,
-        width:30,
-        height:30,
+        width:25,
+        height:25,
         zIndex: 10,
-        borderRadius:30,
+        borderRadius:15,
         alignItems: "center",
-        backgroundColor:colors.border,
+        justifyContent: "center",
+        backgroundColor:colors.accent,
       }}
     >
-      <Text style={{ fontSize: 20,fontWeight:900, color: colors.sub }}>⋮</Text>
+      <Entypo name="dots-three-vertical" size={12} color="white" />
     </Pressable>
 
 
@@ -66,10 +68,11 @@ export const RecipeItem = ({
         source={require("@/assets/images/icon.png")}
         resizeMode="cover"
         style={{
-          width: "100%",
+          width: 174,
           height: 120,
           borderRadius: 12,
           marginBottom:0,
+          marginTop:-5
         }}
       />
 

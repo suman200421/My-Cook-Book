@@ -30,11 +30,30 @@ const RecipeEditorScreen=()=>{
 
     //const [ ingredients, setIngredients ] =useState(existingRecipe?.ingredients ?? '');
 
-    const [ingredients, setIngredients] = useState<string[]>(
+    type IngredientInput={
+        name: string;
+        quantity: string;
+        unit:string
+    }
+    /*const [ingredients, setIngredients] = useState<string[]>(
         existingRecipe
             ? existingRecipe.ingredients
                 .split(",")
                 .map((i) => i.trim())
+            : []
+    );*/
+    const [ingredients, setIngredients] = useState<IngredientInput[]>(
+        existingRecipe
+            ? existingRecipe.ingredients
+                .split(",")
+                .map((i) => {
+                    const parts= i.trim().split(" ");
+                    return {
+                        quantity: parts[0]?.match(/^\d/) ? parts[0] : "",
+                        unit: parts[1]?.match(/^[a-zA-Z]+$/) ? parts[1] : "",
+                        name: parts.slice(2).join(" ") || i.trim(),
+                    };
+                })
             : []
     );
 
@@ -54,11 +73,19 @@ const RecipeEditorScreen=()=>{
         const parsedCookTime =
             cookTime.trim() === "" ? 0 : Number(cookTime);
         const ingredientsString = ingredients
-            .map((i) => i.trim())
+            .map((i) => i.name.trim())
             .filter(Boolean)
             .join(", ");
 
         try {
+            const ingredientsString = ingredients
+                .filter((i) => i.name)
+                .map(
+                    (i) =>
+                    `${i.quantity ? i.quantity + " " : ""}${i.unit ? i.unit + " " : ""}${i.name}`
+                )
+                .join(", ");
+
             if (isNew) {
                 await addRecipe(
                     title,
@@ -251,7 +278,7 @@ const RecipeEditorScreen=()=>{
             {/* INGREDIENTS SECTION */}
 
             <Pressable
-            onPress={() => setIngredients((prev) => [...prev, ""])}
+            onPress={() => setIngredients((prev) => [...prev, {name:"", quantity:"", unit:""}])}
             style={{
                 marginBottom: 12,
                 paddingVertical: 10,
@@ -271,7 +298,7 @@ const RecipeEditorScreen=()=>{
             {/* INGREDIENT INPUT ROWS */}
             <View style={{ marginBottom: 8}}>
             {ingredients.map((ingredient, index) => {
-                const query = ingredient.trim().toLowerCase();
+                const query = ingredient.name.trim().toLowerCase();
                 const suggestions = INGREDIENTS.filter((item) =>
                     item.toLowerCase().includes(query)
                 ).slice(0, 5);
@@ -286,8 +313,9 @@ const RecipeEditorScreen=()=>{
                     gap: 8,
                     }}
                 >
+                    <View style={{flex:2}}>
                     <TextInput
-                    value={ingredient}
+                    value={ingredient.name}
                     placeholder={`Ingredient ${index + 1}`}
                     placeholderTextColor={colors.sub}
 
@@ -296,7 +324,7 @@ const RecipeEditorScreen=()=>{
 
                     onChangeText={(text) => {
                         const updated = [...ingredients];
-                        updated[index] = text;
+                        updated[index].name = text;
                         setIngredients(updated);
                     }}
                     style={{
@@ -310,6 +338,7 @@ const RecipeEditorScreen=()=>{
                         color: colors.text,
                     }}
                     />
+                    </View>
 
                     {/* REMOVE */}
                     <Pressable
@@ -323,9 +352,9 @@ const RecipeEditorScreen=()=>{
 
                 {/* SUGGESTIONS DROPDOWN */}
                 {activeIngredientIndex === index &&
-                ingredient.length > 0 &&
+                ingredient.name.length > 0 &&
                 suggestions.length > 0 &&
-                !suggestions.includes(ingredient) && (
+                !suggestions.includes(ingredient.name) && (
 
                     <View
                     style={{
@@ -342,7 +371,7 @@ const RecipeEditorScreen=()=>{
                         key={item}
                         onPress={() => {
                             const updated = [...ingredients];
-                            updated[index] = item;
+                            updated[index].name = item;
                             setIngredients(updated);
                             setActiveIngredientIndex(null);
                         }}
@@ -357,6 +386,55 @@ const RecipeEditorScreen=()=>{
                     </View>
                     
                 )}
+                <View
+                    style={{
+                    flexDirection: "row",
+                    gap: 8,
+                    marginTop: 6,
+                    }}
+                >
+                    <View style={{flex:.8}}>
+                    <TextInput
+                    value={ingredient.quantity}
+                    placeholder="Qty"
+                    keyboardType="numeric"
+                    onChangeText={(text) => {
+                        const updated = [...ingredients];
+                        updated[index].quantity = text;
+                        setIngredients(updated);
+                    }}
+                    style={{
+                        backgroundColor: colors.card,
+                        borderRadius: 10,
+                        borderWidth: 1,
+                        borderColor: colors.border,
+                        paddingHorizontal: 12,
+                        paddingVertical: 10,
+                        color: colors.text,
+                    }}
+                    />
+                    </View>
+                    <View style={{flex:.8}}>
+                    <TextInput
+                    value={ingredient.unit}
+                    placeholder="Unit"
+                    onChangeText={(text) => {
+                        const updated = [...ingredients];
+                        updated[index].unit = text;
+                        setIngredients(updated);
+                    }}
+                    style={{
+                        backgroundColor: colors.card,
+                        borderRadius: 10,
+                        borderWidth: 1,
+                        borderColor: colors.border,
+                        paddingHorizontal: 12,
+                        paddingVertical: 10,
+                        color: colors.text,
+                    }}
+                    />
+                    </View>
+                </View>
                 </View>
             );
             })}

@@ -269,10 +269,12 @@ const RecipeEditorScreen=()=>{
             </Pressable>
 
             {/* INGREDIENT INPUT ROWS */}
+            <View style={{ marginBottom: 8}}>
             {ingredients.map((ingredient, index) => {
-            const suggestions = INGREDIENTS.filter((item) =>
-                item.toLowerCase().startsWith(ingredient.toLowerCase())
-            ).slice(0, 5);
+                const query = ingredient.trim().toLowerCase();
+                const suggestions = INGREDIENTS.filter((item) =>
+                    item.toLowerCase().includes(query)
+                ).slice(0, 5);
 
             return (
                 <View key={index} style={{ marginTop: 8 }}>
@@ -332,6 +334,7 @@ const RecipeEditorScreen=()=>{
                         borderWidth: 1,
                         borderColor: colors.border,
                         marginTop: 4,
+                        maxHeight:150,
                     }}
                     >
                     {suggestions.map((item) => (
@@ -352,10 +355,12 @@ const RecipeEditorScreen=()=>{
                         </Pressable>
                     ))}
                     </View>
+                    
                 )}
                 </View>
             );
             })}
+            </View>
 
             <View style={{ marginBottom: 16 }}>
             <TextInput

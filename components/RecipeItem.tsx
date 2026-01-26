@@ -92,7 +92,7 @@ export const RecipeItem = ({
         </Text>
       </View>
 
-      {(item.prepTime || item.cookTime) && (
+      {(item.prepTime !== null || item.cookTime !== null) && (
         <View
           style={{
             position: "absolute",

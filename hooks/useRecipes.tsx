@@ -118,7 +118,7 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
             cookTime = ?,
             updatedAt = ?,
             difficulty = ?,
-            recipeNotes = ?,
+            recipeNotes = ?
             WHERE id = ?`,
         [
             title.trim(),

@@ -5,7 +5,7 @@ import { INGREDIENTS } from '@/lib/ingredients';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from 'react';
-import { Alert, Modal, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Modal, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
 const RecipeEditorScreen = () => {
     const { id } = useLocalSearchParams();
@@ -65,7 +65,7 @@ const RecipeEditorScreen = () => {
     const [recipeNotes, setRecipeNotes] = useState(existingRecipe?.recipeNotes ?? '');
 
     const [difficulty, setDifficulty] = useState<
-    |"Beginner"| "Easy"| "Intermediate"| "Advanced"| "Chef Mode"
+        | "Beginner" | "Easy" | "Intermediate" | "Advanced" | "Chef Mode"
     >(existingRecipe?.difficulty ?? "Easy");
 
     const [difficultyModalVisible, setDifficultyModalVisible] = useState(false);
@@ -166,11 +166,16 @@ const RecipeEditorScreen = () => {
             title: isNew ? "Create Recipe" : "Edit Recipe",
             headerBackVisible: false,
         }} />
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior="padding"
+            keyboardVerticalOffset={80}
+        >
         <ScrollView
             style={{ flex: 1 }}
             contentContainerStyle={{
                 padding: 16,
-                paddingBottom: 120, // ✅ space for footer
+                paddingBottom: 140, // ✅ space for footer
             }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
@@ -308,85 +313,85 @@ const RecipeEditorScreen = () => {
             </View>
 
             <View style={{ marginBottom: 16 }}>
-  <Pressable
-    onPress={() => setDifficultyModalVisible(true)}
-    style={{
-      backgroundColor: colors.card,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: colors.border,
-      paddingHorizontal: 14,
-      paddingVertical: 14,
-    }}
-  >
-    <Text style={{ color: colors.text, fontSize: 16, fontWeight: "600" }}>
-      Difficulty: {difficulty}
-    </Text>
-  </Pressable>
+                <Pressable
+                    onPress={() => setDifficultyModalVisible(true)}
+                    style={{
+                        backgroundColor: colors.card,
+                        borderRadius: 12,
+                        borderWidth: 1,
+                        borderColor: colors.border,
+                        paddingHorizontal: 14,
+                        paddingVertical: 14,
+                    }}
+                >
+                    <Text style={{ color: colors.text, fontSize: 16, fontWeight: "600" }}>
+                        Difficulty: {difficulty}
+                    </Text>
+                </Pressable>
 
-  <Modal
-    visible={difficultyModalVisible}
-    transparent
-    animationType="slide"
-    onRequestClose={() => setDifficultyModalVisible(false)}
-  >
-    <Pressable
-      style={{
-        flex: 1,
-        backgroundColor: "rgba(0,0,0,0.4)",
-        justifyContent: "flex-end",
-      }}
-      onPress={() => setDifficultyModalVisible(false)}
-    >
-      <View
-        style={{
-          backgroundColor: colors.bg,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          padding: 16,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: "700",
-            marginBottom: 12,
-            color: colors.text,
-          }}
-        >
-          Select Difficulty
-        </Text>
+                <Modal
+                    visible={difficultyModalVisible}
+                    transparent
+                    animationType="slide"
+                    onRequestClose={() => setDifficultyModalVisible(false)}
+                >
+                    <Pressable
+                        style={{
+                            flex: 1,
+                            backgroundColor: "rgba(0,0,0,0.4)",
+                            justifyContent: "flex-end",
+                        }}
+                        onPress={() => setDifficultyModalVisible(false)}
+                    >
+                        <View
+                            style={{
+                                backgroundColor: colors.bg,
+                                borderTopLeftRadius: 20,
+                                borderTopRightRadius: 20,
+                                padding: 16,
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 18,
+                                    fontWeight: "700",
+                                    marginBottom: 12,
+                                    color: colors.text,
+                                }}
+                            >
+                                Select Difficulty
+                            </Text>
 
-        {["Beginner", "Easy", "Intermediate", "Advanced", "Chef Mode"].map((level) => (
-          <Pressable
-            key={level}
-            onPress={() => {
-              setDifficulty(level as any);
-              setDifficultyModalVisible(false);
-            }}
-            style={{
-              paddingVertical: 14,
-              borderBottomWidth: 1,
-              borderBottomColor: colors.border,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                color:
-                  level === difficulty ? colors.accent : colors.text,
-                fontWeight:
-                  level === difficulty ? "700" : "500",
-              }}
-            >
-              {level}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
-    </Pressable>
-  </Modal>
-</View>
+                            {["Beginner", "Easy", "Intermediate", "Advanced", "Chef Mode"].map((level) => (
+                                <Pressable
+                                    key={level}
+                                    onPress={() => {
+                                        setDifficulty(level as any);
+                                        setDifficultyModalVisible(false);
+                                    }}
+                                    style={{
+                                        paddingVertical: 14,
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: colors.border,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 16,
+                                            color:
+                                                level === difficulty ? colors.accent : colors.text,
+                                            fontWeight:
+                                                level === difficulty ? "700" : "500",
+                                        }}
+                                    >
+                                        {level}
+                                    </Text>
+                                </Pressable>
+                            ))}
+                        </View>
+                    </Pressable>
+                </Modal>
+            </View>
 
 
 
@@ -622,7 +627,7 @@ const RecipeEditorScreen = () => {
                 />
             </View>
 
-            <View style={{ marginBottom: 16}}>
+            <View style={{ marginBottom: 16 }}>
                 <TextInput
                     value={recipeNotes}
                     onChangeText={setRecipeNotes}
@@ -660,6 +665,7 @@ const RecipeEditorScreen = () => {
                 }}
             />
         </ScrollView>
+        </KeyboardAvoidingView>
         <AppFooter>
             <Pressable style={{
                 marginBottom: 12

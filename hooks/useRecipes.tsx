@@ -4,8 +4,8 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 
 type RecipesContextType={
     recipes: Recipe[];
-    addRecipe: (title:string, ingredients:string, recipe:string, vidlink:string, category: Recipe["category"], prepTime:number,cooktime:number) => Promise<Recipe>;
-    updatedRecipe: (id:string, title:string, ingredients:string, recipe:string, vidlink:string, category: Recipe["category"], prepTime:number, cooktime:number) => Promise<Recipe|null>;
+    addRecipe: (title:string, ingredients:string, recipe:string, vidlink:string, category: Recipe["category"],servings:number, prepTime:number,cooktime:number,difficulty: "Beginner"| "Easy"| "Intermediate"| "Advanced"| "Chef Mode"| null,recipeNotes:string) => Promise<Recipe>;
+    updatedRecipe: (id:string, title:string, ingredients:string, recipe:string, vidlink:string, category: Recipe["category"], servings:number, prepTime:number, cooktime:number, difficulty: "Beginner"| "Easy"| "Intermediate"| "Advanced"| "Chef Mode"| null,recipeNotes:string) => Promise<Recipe|null>;
     deleteRecipe: (id:string) => Promise<void>;
     toggleFavorite:(id:string)=>Promise<void>;
     //getRecipeById: (id:string) => Promise<Recipe | null>;
@@ -38,8 +38,11 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
         recipe:string,
         vidlink:string,
         category:Recipe['category'],
+        servings:number,
         prepTime:number,
-        cookTime:number
+        cookTime:number,
+        difficulty: "Beginner"| "Easy"| "Intermediate"| "Advanced"| "Chef Mode" | null,
+        recipeNotes:string
     ): Promise<Recipe> => {
 
         const db = await getDBConnection();
@@ -52,15 +55,18 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
             recipe: recipe.trim(),
             vidlink: vidlink.trim(),
             category,
+            servings,
             isFavorite:false,
             prepTime,
             cookTime,
+            recipeNotes: recipeNotes.trim(),
             createdAt: now,
             updatedAt: now,
+            difficulty: difficulty??undefined
         };
 
         await db.runAsync(
-        `INSERT INTO recipes (id, title, ingredients, recipe, vidlink, category, isFavorite, prepTime, cookTime, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+        `INSERT INTO recipes (id, title, ingredients, recipe, vidlink, category, servings, isFavorite, prepTime, cookTime, createdAt, updatedAt,recipeNotes) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?);`,
         [
             recipen.id,
             recipen.title,
@@ -68,11 +74,14 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
             recipen.recipe,
             recipen.vidlink,
             recipen.category,
+            servings??null,
             recipen.isFavorite? 1 : 0,
             prepTime??null,
             cookTime??null,
             recipen.createdAt,
-            recipen.updatedAt
+            recipen.updatedAt,
+            difficulty??null,
+            recipen.recipeNotes
         ]
     );
         
@@ -88,8 +97,11 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
         recipe: string,
         vidlink: string,
         category: Recipe['category'],
+        servings: number,
         prepTime:number,
-        cookTime:number
+        cookTime:number,
+        difficulty: "Beginner"| "Easy"| "Intermediate"| "Advanced"| "Chef Mode" | null,
+        recipeNotes:string
     ): Promise<Recipe | null> => {
         const db = await getDBConnection();
         const now = Date.now();
@@ -101,9 +113,12 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
             recipe = ?,
             vidlink = ?,
             category = ?,
+            servings = ?,
             prepTime = ?,
             cookTime = ?,
-            updatedAt = ?
+            updatedAt = ?,
+            difficulty = ?,
+            recipeNotes = ?,
             WHERE id = ?`,
         [
             title.trim(),
@@ -129,6 +144,11 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
                     vidlink: vidlink.trim(),
                     category,
                     updatedAt: now,
+                    servings,
+                    prepTime,
+                    cookTime,
+                    difficulty: difficulty??undefined,
+                    recipeNotes: recipeNotes.trim(),
                 };
                 return updatedRecipe;
             }

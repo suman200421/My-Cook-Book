@@ -7,11 +7,17 @@ export type Recipe={
     vidlink:string;
 
     isFavorite?:boolean;
-    //servings?:number;
+    servings?:number;
     prepTime?:number;
     cookTime?:number;
-    //difficulty?:"Easy" | "Medium" | "Hard";
-    //recipeNotes:string;
+    difficulty?: 
+  | "Beginner"
+  | "Easy"
+  | "Intermediate"
+  | "Advanced"
+  | "Chef Mode";
+
+    recipeNotes:string;
 
     createdAt:number;
     updatedAt:number;

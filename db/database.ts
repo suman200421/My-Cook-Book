@@ -22,10 +22,10 @@ export const getDBConnection = async () => {
             prepTime INTEGER,
             cookTime INTEGER,
 
-            --servings INTEGER,
-            --difficulty TEXT,
+            servings INTEGER,
+            difficulty TEXT,
 
-            --recipeNotes TEXT,
+            recipeNotes TEXT,
             
             createdAt INTEGER NOT NULL,
             updatedAt INTEGER NOT NULL

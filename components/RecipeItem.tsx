@@ -65,7 +65,7 @@ export const RecipeItem = ({
       }}
     >
       <Image
-        source={require("@/assets/images/icon.png")}
+        source={require("@/assets/images/default_recipe_picture.png")}
         resizeMode="cover"
         style={{
           width: 174,

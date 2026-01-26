@@ -48,53 +48,19 @@ export default function Recipe() {
   const [findMode, setFindMode] = useState(false);
   const [ingredientQuery, setIngredientQuery] = useState("");
 
+  const typedIngredients = ingredientQuery
+  .split(",")
+  .map((i) => i.trim().toLowerCase())
+  .filter(Boolean);
 
-  /*const filteredRecipes = recipes.filter((recipe) => {
-    const matchesText =
-      recipe.title.toLowerCase().includes(search.toLowerCase()) ||
-      recipe.ingredients.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory =
-      categoryFilter === "All" || recipe.category === categoryFilter;
+  const allSelectedIngredients = Array.from(
+    new Set([...selectedIngredients, ...typedIngredients])
+  );
 
-    return matchesText && matchesCategory;
-  });*/
-
-  // const filteredRecipes = findMode
-  //   ? matchRecipesByIngredients(
-  //     recipes,
-  //     ingredientQuery
-  //       .split(",")
-  //       .map((i) => i.trim())
-  //       .filter(Boolean)
-  //   ).map((r) => r.recipe)
-  //   : recipes.filter((recipe) => {
-  //     const matchesText =
-  //       recipe.title.toLowerCase().includes(search.toLowerCase()) ||
-  //       recipe.ingredients.toLowerCase().includes(search.toLowerCase());
-
-  //     const matchesCategory =
-  //       categoryFilter === "All" || recipe.category === categoryFilter;
-
-  //     return matchesText && matchesCategory;
-  //   });
-  // const filteredRecipes = findMode
-  // ? matchRecipesByIngredients(recipes, selectedIngredients)
-  //     .map((r) => r.recipe)
-  // : recipes.filter((recipe) => {
-  //     const matchesText =
-  //       recipe.title.toLowerCase().includes(search.toLowerCase()) ||
-  //       recipe.ingredients.toLowerCase().includes(search.toLowerCase());
-
-  //     const matchesCategory =
-  //       categoryFilter === "All" ||
-  //       recipe.category === categoryFilter;
-
-  //     return matchesText && matchesCategory;
-  //   });
 
   const filteredRecipes = findMode
-  ? matchRecipesByIngredients(recipes, selectedIngredients)
-  : recipes.filter((recipe) => {
+    ? matchRecipesByIngredients(recipes, allSelectedIngredients)
+    : recipes.filter((recipe) => {
       const matchesText =
         recipe.title.toLowerCase().includes(search.toLowerCase()) ||
         recipe.ingredients.toLowerCase().includes(search.toLowerCase());
@@ -107,38 +73,15 @@ export default function Recipe() {
     });
 
 
-  // const filteredRecipes = findMode
-  // ? matchRecipesByIngredients(recipes, selectedIngredients)
-  //     .map((r) => r.recipe)
-  // : recipes.filter((recipe) => {
-  //     const matchesText =
-  //       recipe.title.toLowerCase().includes(search.toLowerCase()) ||
-  //       recipe.ingredients.toLowerCase().includes(search.toLowerCase());
-
-  //     const matchesCategory =
-  //       categoryFilter === "All" ||
-  //       recipe.category === categoryFilter;
-
-  //     return matchesText && matchesCategory;
-  //   });
-
-
-  // const toggleIngredient = (ingredient: string) => {
-  // setSelectedIngredients((prev) =>
-  //   prev.includes(ingredient)
-  //     ? prev.filter((i) => i !== ingredient)
-  //     : [...prev, ingredient]
-  // );
-  // };
   const toggleIngredient = (ingredient: string) => {
-  const normalized = ingredient.toLowerCase();
+    const normalized = ingredient.toLowerCase();
 
-  setSelectedIngredients((prev) =>
-    prev.includes(normalized)
-      ? prev.filter((i) => i !== normalized)
-      : [...prev, normalized]
-  );
-};
+    setSelectedIngredients((prev) =>
+      prev.includes(normalized)
+        ? prev.filter((i) => i !== normalized)
+        : [...prev, normalized]
+    );
+  };
 
 
 
@@ -151,49 +94,7 @@ export default function Recipe() {
           flex: 1
         }}
       >
-        {/*<View style={{flexDirection:'row', gap:8, paddingTop:12, paddingHorizontal:0,}}>
-          <View
-            style={{
-              marginHorizontal: 16,
-              marginTop: 12,
-              marginBottom: 4,
-              backgroundColor: colors.card,
-              borderRadius: 12,
-              borderWidth: 1,
-              borderColor: colors.border,
-              paddingHorizontal: 12,
-              width: 250,
-            }}
-          >
-            <TextInput
-              placeholder="Search recipes..."
-              placeholderTextColor={colors.sub}
-              value={search}
-              onChangeText={setSearch}
-              style={{
-                height: 44,
-                color: colors.text,
-                fontSize: 14,
-                marginHorizontal: 16,
-                //fontWeight: '500',
-              }}
-            />
-          </View>
-          <Pressable
-            onPress={() => {
-              setFindMode((v) => !v);
-              setIngredientQuery("");
-            }}
-            style={{
-              alignSelf: "flex-end",
-              marginBottom: 8,
-            }}
-          >
-            <Text style={{ color: colors.accent, fontWeight: "600" }}>
-              {findMode ? "Show all recipes" : "Find by ingredients"}
-            </Text>
-          </Pressable>
-        </View>*/}
+
         <View
           style={{
             flexDirection: "row",
@@ -252,116 +153,50 @@ export default function Recipe() {
           </Pressable>
         </View>
 
-        {/* {findMode && (
-  <View style={{ marginBottom: 12 }}>
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{
-        paddingHorizontal: 16,
-        gap: 8,
-      }}
-    >
-      {INGREDIENT_SUGGESTIONS.map((ingredient) => {
-        const selected = selectedIngredients.includes(ingredient);
 
-        return (
-          <Pressable
-            key={ingredient}
-            onPress={() => toggleIngredient(ingredient)}
+        {findMode && INGREDIENT_SUGGESTIONS?.length > 0 && (
+          <View
             style={{
-              paddingHorizontal: 14,
-              paddingVertical: 8,
-              borderRadius: 20,
-              backgroundColor: selected
-                ? colors.accent
-                : colors.card,
-              borderWidth: 1,
-              borderColor: selected
-                ? colors.accent
-                : colors.border,
-            }}
-          >
-            <Text
-              style={{
-                color: selected ? "#fff" : colors.text,
-                fontWeight: "600",
-                fontSize: 13,
-              }}
-            >
-              {ingredient}
-            </Text>
-          </Pressable>
-        );
-      })}
-    </ScrollView>
-  </View>
-)} */}
-
-{findMode && INGREDIENT_SUGGESTIONS?.length > 0 && (
-  <View
-    style={{
-      flexDirection: "row",
-      flexWrap: "wrap",
-      gap: 8,
-      paddingHorizontal: 16,
-      marginBottom: 12,
-    }}
-  >
-    {INGREDIENT_SUGGESTIONS.map((ingredient) => {
-  const selected = selectedIngredients.includes(
-    ingredient.toLowerCase()
-  );
-
-  return (
-    <Pressable
-      key={ingredient}
-      onPress={() => toggleIngredient(ingredient)}
-      style={{
-        paddingHorizontal: 14,
-        paddingVertical: 8,
-        borderRadius: 20,
-        backgroundColor: selected ? colors.accent : colors.card,
-        borderWidth: 1,
-        borderColor: selected ? colors.accent : colors.border,
-      }}
-    >
-      <Text
-        style={{
-          color: selected ? "#fff" : colors.text,
-          fontWeight: "600",
-          fontSize: 13,
-        }}
-      >
-        {ingredient}
-      </Text>
-    </Pressable>
-  );
-})}
-
-  </View>
-)}
-
-
-
-        {/* {findMode && (
-          <TextInput
-            value={ingredientQuery}
-            onChangeText={setIngredientQuery}
-            placeholder="rice, onion, oil"
-            placeholderTextColor={colors.sub}
-            style={{
-              backgroundColor: colors.card,
-              borderRadius: 12,
-              borderWidth: 1,
-              borderColor: colors.border,
-              paddingHorizontal: 14,
-              paddingVertical: 12,
-              color: colors.text,
+              flexDirection: "row",
+              flexWrap: "wrap",
+              gap: 8,
+              paddingHorizontal: 16,
               marginBottom: 12,
             }}
-          />
-        )} */}
+          >
+            {INGREDIENT_SUGGESTIONS.map((ingredient) => {
+              const selected = selectedIngredients.includes(
+                ingredient.toLowerCase()
+              );
+
+              return (
+                <Pressable
+                  key={ingredient}
+                  onPress={() => toggleIngredient(ingredient)}
+                  style={{
+                    paddingHorizontal: 14,
+                    paddingVertical: 8,
+                    borderRadius: 20,
+                    backgroundColor: selected ? colors.accent : colors.card,
+                    borderWidth: 1,
+                    borderColor: selected ? colors.accent : colors.border,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: selected ? "#fff" : colors.text,
+                      fontWeight: "600",
+                      fontSize: 13,
+                    }}
+                  >
+                    {ingredient}
+                  </Text>
+                </Pressable>
+              );
+            })}
+
+          </View>
+        )}
 
         <View>
           {!findMode && (

@@ -268,3 +268,18 @@ export const INGREDIENTS = [
 "Silkworm Pupae",
 "Palm Weevil Larvae"
 ];
+
+export const INGREDIENT_SUGGESTIONS = [
+  "Rice",
+  "Onion",
+  "Potato",
+  "Tomato",
+  "Garlic",
+  "Ginger",
+  "Oil",
+  "Salt",
+  "Egg",
+  "Milk",
+  "Chicken",
+  "Paneer",
+];

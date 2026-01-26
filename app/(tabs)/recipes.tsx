@@ -59,24 +59,54 @@ export default function Recipe() {
     return matchesText && matchesCategory;
   });*/
 
+  // const filteredRecipes = findMode
+  //   ? matchRecipesByIngredients(
+  //     recipes,
+  //     ingredientQuery
+  //       .split(",")
+  //       .map((i) => i.trim())
+  //       .filter(Boolean)
+  //   ).map((r) => r.recipe)
+  //   : recipes.filter((recipe) => {
+  //     const matchesText =
+  //       recipe.title.toLowerCase().includes(search.toLowerCase()) ||
+  //       recipe.ingredients.toLowerCase().includes(search.toLowerCase());
+
+  //     const matchesCategory =
+  //       categoryFilter === "All" || recipe.category === categoryFilter;
+
+  //     return matchesText && matchesCategory;
+  //   });
+  // const filteredRecipes = findMode
+  // ? matchRecipesByIngredients(recipes, selectedIngredients)
+  //     .map((r) => r.recipe)
+  // : recipes.filter((recipe) => {
+  //     const matchesText =
+  //       recipe.title.toLowerCase().includes(search.toLowerCase()) ||
+  //       recipe.ingredients.toLowerCase().includes(search.toLowerCase());
+
+  //     const matchesCategory =
+  //       categoryFilter === "All" ||
+  //       recipe.category === categoryFilter;
+
+  //     return matchesText && matchesCategory;
+  //   });
+
   const filteredRecipes = findMode
-    ? matchRecipesByIngredients(
-      recipes,
-      ingredientQuery
-        .split(",")
-        .map((i) => i.trim())
-        .filter(Boolean)
-    ).map((r) => r.recipe)
-    : recipes.filter((recipe) => {
+  ? matchRecipesByIngredients(recipes, selectedIngredients)
+  : recipes.filter((recipe) => {
       const matchesText =
         recipe.title.toLowerCase().includes(search.toLowerCase()) ||
         recipe.ingredients.toLowerCase().includes(search.toLowerCase());
 
       const matchesCategory =
-        categoryFilter === "All" || recipe.category === categoryFilter;
+        categoryFilter === "All" ||
+        recipe.category === categoryFilter;
 
       return matchesText && matchesCategory;
     });
+
+
   // const filteredRecipes = findMode
   // ? matchRecipesByIngredients(recipes, selectedIngredients)
   //     .map((r) => r.recipe)
@@ -93,13 +123,23 @@ export default function Recipe() {
   //   });
 
 
+  // const toggleIngredient = (ingredient: string) => {
+  // setSelectedIngredients((prev) =>
+  //   prev.includes(ingredient)
+  //     ? prev.filter((i) => i !== ingredient)
+  //     : [...prev, ingredient]
+  // );
+  // };
   const toggleIngredient = (ingredient: string) => {
+  const normalized = ingredient.toLowerCase();
+
   setSelectedIngredients((prev) =>
-    prev.includes(ingredient)
-      ? prev.filter((i) => i !== ingredient)
-      : [...prev, ingredient]
+    prev.includes(normalized)
+      ? prev.filter((i) => i !== normalized)
+      : [...prev, normalized]
   );
-  };
+};
+
 
 
   return (
@@ -212,7 +252,7 @@ export default function Recipe() {
           </Pressable>
         </View>
 
-        {findMode && (
+        {/* {findMode && (
   <View style={{ marginBottom: 12 }}>
     <ScrollView
       horizontal
@@ -256,7 +296,52 @@ export default function Recipe() {
       })}
     </ScrollView>
   </View>
+)} */}
+
+{findMode && INGREDIENT_SUGGESTIONS?.length > 0 && (
+  <View
+    style={{
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 8,
+      paddingHorizontal: 16,
+      marginBottom: 12,
+    }}
+  >
+    {INGREDIENT_SUGGESTIONS.map((ingredient) => {
+  const selected = selectedIngredients.includes(
+    ingredient.toLowerCase()
+  );
+
+  return (
+    <Pressable
+      key={ingredient}
+      onPress={() => toggleIngredient(ingredient)}
+      style={{
+        paddingHorizontal: 14,
+        paddingVertical: 8,
+        borderRadius: 20,
+        backgroundColor: selected ? colors.accent : colors.card,
+        borderWidth: 1,
+        borderColor: selected ? colors.accent : colors.border,
+      }}
+    >
+      <Text
+        style={{
+          color: selected ? "#fff" : colors.text,
+          fontWeight: "600",
+          fontSize: 13,
+        }}
+      >
+        {ingredient}
+      </Text>
+    </Pressable>
+  );
+})}
+
+  </View>
 )}
+
 
 
         {/* {findMode && (

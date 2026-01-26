@@ -276,10 +276,11 @@ export const INGREDIENT_SUGGESTIONS = [
   "Tomato",
   "Garlic",
   "Ginger",
-  "Oil",
   "Salt",
   "Egg",
   "Milk",
   "Chicken",
   "Paneer",
+  "Spinach",
+  "Oil",
 ];

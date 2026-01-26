@@ -21,28 +21,46 @@ export const extractIngredientsFromRecipe = (ingredients: string) => {
     .filter(Boolean);
 };
 
+// export const matchRecipesByIngredients = (
+//   recipes: Recipe[],
+//   userIngredients: string[]
+// ) => {
+//   const normalizedUser = userIngredients.map(normalizeIngredient);
+
+//   return recipes
+//     .map((recipe) => {
+//       const recipeIngredients = extractIngredientsFromRecipe(
+//         recipe.ingredients
+//       );
+
+//       const matched = recipeIngredients.filter((ing) =>
+//         normalizedUser.includes(ing)
+//       );
+
+//       return {
+//         recipe,
+//         matchedCount: matched.length,
+//         totalCount: recipeIngredients.length,
+//       };
+//     })
+//     .filter((r) => r.matchedCount > 0)
+//     .sort((a, b) => b.matchedCount - a.matchedCount);
+// };
+
 export const matchRecipesByIngredients = (
   recipes: Recipe[],
   userIngredients: string[]
 ) => {
-  const normalizedUser = userIngredients.map(normalizeIngredient);
+  if (userIngredients.length === 0) return [];
 
-  return recipes
-    .map((recipe) => {
-      const recipeIngredients = extractIngredientsFromRecipe(
-        recipe.ingredients
-      );
+  return recipes.filter((recipe) => {
+    const recipeIngredients = extractIngredientsFromRecipe(
+      recipe.ingredients
+    );
 
-      const matched = recipeIngredients.filter((ing) =>
-        normalizedUser.includes(ing)
-      );
-
-      return {
-        recipe,
-        matchedCount: matched.length,
-        totalCount: recipeIngredients.length,
-      };
-    })
-    .filter((r) => r.matchedCount > 0)
-    .sort((a, b) => b.matchedCount - a.matchedCount);
+    // ✅ EVERY selected ingredient must exist in recipe
+    return userIngredients.every((userIng) =>
+      recipeIngredients.includes(normalizeIngredient(userIng))
+    );
+  });
 };

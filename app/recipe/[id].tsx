@@ -175,7 +175,7 @@ const RecipeEditorScreen = () => {
             style={{ flex: 1 }}
             contentContainerStyle={{
                 padding: 16,
-                paddingBottom: 140, // ✅ space for footer
+                //paddingBottom: 140, // ✅ space for footer
             }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}

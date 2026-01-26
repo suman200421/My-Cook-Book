@@ -6,18 +6,18 @@ export type Recipe={
     recipe:string;
     vidlink:string;
 
-    isFavorite?:boolean;
-    servings?:number;
-    prepTime?:number;
-    cookTime?:number;
-    difficulty?: 
+    isFavorite:boolean;
+    servings:number|null;
+    prepTime:number|null;
+    cookTime:number|null;
+    difficulty: 
   | "Beginner"
   | "Easy"
   | "Intermediate"
   | "Advanced"
   | "Chef Mode";
 
-    recipeNotes:string;
+    recipeNotes:string|null;
 
     createdAt:number;
     updatedAt:number;

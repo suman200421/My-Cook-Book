@@ -2,30 +2,51 @@ import { getDBConnection } from "@/db/database";
 import { Recipe } from "@/types";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
-type RecipesContextType={
+type RecipesContextType = {
     recipes: Recipe[];
-    addRecipe: (title:string, ingredients:string, recipe:string, vidlink:string, category: Recipe["category"],servings:number, prepTime:number,cooktime:number,difficulty: "Beginner"| "Easy"| "Intermediate"| "Advanced"| "Chef Mode"| null,recipeNotes:string) => Promise<Recipe>;
-    updatedRecipe: (id:string, title:string, ingredients:string, recipe:string, vidlink:string, category: Recipe["category"], servings:number, prepTime:number, cooktime:number, difficulty: "Beginner"| "Easy"| "Intermediate"| "Advanced"| "Chef Mode"| null,recipeNotes:string) => Promise<Recipe|null>;
-    deleteRecipe: (id:string) => Promise<void>;
-    toggleFavorite:(id:string)=>Promise<void>;
+    addRecipe: (title: string, ingredients: string, recipe: string, vidlink: string, category: Recipe["category"], servings: number, prepTime: number, cooktime: number, difficulty: Recipe['difficulty'], recipeNotes: string) => Promise<Recipe>;
+    updatedRecipe: (id: string, title: string, ingredients: string, recipe: string, vidlink: string, category: Recipe["category"], servings: number, prepTime: number, cooktime: number, difficulty: Recipe['difficulty'], recipeNotes: string) => Promise<Recipe | null>;
+    deleteRecipe: (id: string) => Promise<void>;
+    toggleFavorite: (id: string) => Promise<void>;
     //getRecipeById: (id:string) => Promise<Recipe | null>;
 };
 
 const RecipesContext = createContext<RecipesContextType | null>(null);
 
-const uid = () => Math.random().toString(36).slice(2,10);
+const uid = () => Math.random().toString(36).slice(2, 10);
 
-export const RecipesProvider = ({children}:{children: ReactNode})=>{
-    const [recipes,setRecipes]=useState<Recipe[]>([]);
+export const RecipesProvider = ({ children }: { children: ReactNode }) => {
+    const [recipes, setRecipes] = useState<Recipe[]>([]);
 
     const loadRecipes = async () => {
         const db = await getDBConnection();
 
+        // const result = await db.getAllAsync<Recipe>(
+        //     "SELECT * FROM recipes ORDER BY rowid DESC"
+        // );
+
+        // setRecipes(result);
         const result = await db.getAllAsync<Recipe>(
             "SELECT * FROM recipes ORDER BY rowid DESC"
         );
 
-        setRecipes(result);
+        const mapped: Recipe[] = result.map((row) => ({
+            id: row.id,
+            title: row.title,
+            ingredients: row.ingredients,
+            recipe: row.recipe,
+            vidlink: row.vidlink,
+            category: row.category,
+            difficulty: row.difficulty,   // ✅ FIX
+            prepTime: row.prepTime ?? null,
+            cookTime: row.cookTime ?? null,
+            servings: row.servings ?? null,
+            isFavorite: Boolean(row.isFavorite),
+            recipeNotes: row.recipeNotes ?? null,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+        }));
+        setRecipes(mapped);
     };
 
     useEffect(() => {
@@ -33,58 +54,76 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
     }, []);
 
     const addRecipe = async (
-        title:string,
-        ingredients:string,
-        recipe:string,
-        vidlink:string,
-        category:Recipe['category'],
-        servings:number,
-        prepTime:number,
-        cookTime:number,
-        difficulty: "Beginner"| "Easy"| "Intermediate"| "Advanced"| "Chef Mode" | null,
-        recipeNotes:string
+        title: string,
+        ingredients: string,
+        recipe: string,
+        vidlink: string,
+        category: Recipe['category'],
+        servings: number,
+        prepTime: number,
+        cookTime: number,
+        difficulty: Recipe['difficulty'],
+        recipeNotes: string
     ): Promise<Recipe> => {
 
         const db = await getDBConnection();
-        const now =Date.now();
+        const now = Date.now();
 
         const recipen: Recipe = {
-            id:uid(),
+            id: uid(),
             title: title.trim(),
             ingredients: ingredients.trim(),
             recipe: recipe.trim(),
             vidlink: vidlink.trim(),
             category,
             servings,
-            isFavorite:false,
+            isFavorite: false,
             prepTime,
             cookTime,
             recipeNotes: recipeNotes.trim(),
             createdAt: now,
             updatedAt: now,
-            difficulty: difficulty??undefined
+            difficulty
         };
-
         await db.runAsync(
-        `INSERT INTO recipes (id, title, ingredients, recipe, vidlink, category, servings, isFavorite, prepTime, cookTime, createdAt, updatedAt,recipeNotes) VALUES (?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?);`,
-        [
-            recipen.id,
-            recipen.title,
-            recipen.ingredients,
-            recipen.recipe,
-            recipen.vidlink,
-            recipen.category,
-            servings??null,
-            recipen.isFavorite? 1 : 0,
-            prepTime??null,
-            cookTime??null,
-            recipen.createdAt,
-            recipen.updatedAt,
-            difficulty??null,
-            recipen.recipeNotes
-        ]
-    );
-        
+            `
+            INSERT INTO recipes (
+                id,
+                title,
+                ingredients,
+                recipe,
+                vidlink,
+                category,
+                difficulty,
+                servings,
+                prepTime,
+                cookTime,
+                recipeNotes,
+                isFavorite,
+                createdAt,
+                updatedAt
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            `,
+            [
+                recipen.id,
+                recipen.title,
+                recipen.ingredients,
+                recipen.recipe,
+                recipen.vidlink,
+                recipen.category,
+                recipen.difficulty,          // "Intermediate"
+                recipen.servings,            // 2
+                recipen.prepTime,            // 10
+                recipen.cookTime,            // 35
+                recipen.recipeNotes,         // "Ysbsnj"
+                recipen.isFavorite ? 1 : 0,
+                recipen.createdAt,
+                recipen.updatedAt,
+            ]
+        );
+
+
 
         setRecipes((prevRecipes) => [recipen, ...prevRecipes]);
         return recipen;
@@ -98,10 +137,10 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
         vidlink: string,
         category: Recipe['category'],
         servings: number,
-        prepTime:number,
-        cookTime:number,
-        difficulty: "Beginner"| "Easy"| "Intermediate"| "Advanced"| "Chef Mode" | null,
-        recipeNotes:string
+        prepTime: number,
+        cookTime: number,
+        difficulty: Recipe['difficulty'],
+        recipeNotes: string
     ): Promise<Recipe | null> => {
         const db = await getDBConnection();
         const now = Date.now();
@@ -120,42 +159,46 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
             difficulty = ?,
             recipeNotes = ?
             WHERE id = ?`,
-        [
-            title.trim(),
-            ingredients.trim(),
-            recipe.trim(),
-            vidlink.trim(),
-            category,
-            now,
-            id,
-        ]
-    );
+            [
+                title.trim(),
+                ingredients.trim(),
+                recipe.trim(),
+                vidlink.trim(),
+                category,
+                difficulty ?? null,
+                servings ?? null,
+                prepTime ?? null,
+                cookTime ?? null,
+                now,
+                id,
+            ]
+        );
 
-    let updatedRecipe: Recipe | null = null;
+        let updatedRecipe: Recipe | null = null;
 
-    setRecipes((prev) =>
-        prev.map((r) => {
-            if(r.id === id){
-                updatedRecipe = {
-                    ...r,
-                    title: title.trim(),
-                    ingredients: ingredients.trim(),
-                    recipe: recipe.trim(),
-                    vidlink: vidlink.trim(),
-                    category,
-                    updatedAt: now,
-                    servings,
-                    prepTime,
-                    cookTime,
-                    difficulty: difficulty??undefined,
-                    recipeNotes: recipeNotes.trim(),
-                };
-                return updatedRecipe;
+        setRecipes((prev) =>
+            prev.map((r) => {
+                if (r.id === id) {
+                    updatedRecipe = {
+                        ...r,
+                        title: title.trim(),
+                        ingredients: ingredients.trim(),
+                        recipe: recipe.trim(),
+                        vidlink: vidlink.trim(),
+                        category,
+                        updatedAt: now,
+                        servings,
+                        prepTime,
+                        cookTime,
+                        difficulty: difficulty ?? null,
+                        recipeNotes: recipeNotes.trim(),
+                    };
+                    return updatedRecipe;
+                }
+                return r;
             }
-            return r;
-        }
-    ));
-    return updatedRecipe;
+            ));
+        return updatedRecipe;
     };
 
     const toggleFavorite = async (id: string) => {
@@ -195,14 +238,14 @@ export const RecipesProvider = ({children}:{children: ReactNode})=>{
 
 
     return (
-        <RecipesContext.Provider value={{recipes, addRecipe, updatedRecipe, deleteRecipe, toggleFavorite}}>
+        <RecipesContext.Provider value={{ recipes, addRecipe, updatedRecipe, deleteRecipe, toggleFavorite }}>
             {children}
         </RecipesContext.Provider>
     )
 };
-export function useRecipes(){
-    const context =useContext(RecipesContext);
-    if(!context){
+export function useRecipes() {
+    const context = useContext(RecipesContext);
+    if (!context) {
         throw new Error("useRecipes must be used within a RecipesProvider");
     }
     return context;

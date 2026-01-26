@@ -14,19 +14,13 @@ export const getDBConnection = async () => {
             ingredients TEXT NOT NULL, 
             recipe TEXT NOT NULL,
             vidlink TEXT,
-            
-            isFavorite INTEGER NOT NULL DEFAULT 0,
-
             category TEXT NOT NULL,
-
+            difficulty TEXT NOT NULL DEFAULT "Easy",
+            servings INTEGER,
             prepTime INTEGER,
             cookTime INTEGER,
-
-            servings INTEGER,
-            difficulty TEXT,
-
             recipeNotes TEXT,
-            
+            isFavorite INTEGER NOT NULL DEFAULT 0,
             createdAt INTEGER NOT NULL,
             updatedAt INTEGER NOT NULL
         );

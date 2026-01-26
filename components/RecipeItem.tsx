@@ -90,7 +90,7 @@ export const RecipeItem = ({
           </Text>
         </View>
 
-        {item.difficulty && (
+        {item.difficulty && difficultyColors[item.difficulty] && (
           <View
             style={{
               position: "absolute",

@@ -20,12 +20,6 @@ export const RecipesProvider = ({ children }: { children: ReactNode }) => {
 
     const loadRecipes = async () => {
         const db = await getDBConnection();
-
-        // const result = await db.getAllAsync<Recipe>(
-        //     "SELECT * FROM recipes ORDER BY rowid DESC"
-        // );
-
-        // setRecipes(result);
         const result = await db.getAllAsync<Recipe>(
             "SELECT * FROM recipes ORDER BY rowid DESC"
         );
@@ -37,7 +31,7 @@ export const RecipesProvider = ({ children }: { children: ReactNode }) => {
             recipe: row.recipe,
             vidlink: row.vidlink,
             category: row.category,
-            difficulty: row.difficulty,   // ✅ FIX
+            difficulty: row.difficulty,
             prepTime: row.prepTime ?? null,
             cookTime: row.cookTime ?? null,
             servings: row.servings ?? null,
@@ -112,11 +106,11 @@ export const RecipesProvider = ({ children }: { children: ReactNode }) => {
                 recipen.recipe,
                 recipen.vidlink,
                 recipen.category,
-                recipen.difficulty,          // "Intermediate"
-                recipen.servings,            // 2
-                recipen.prepTime,            // 10
-                recipen.cookTime,            // 35
-                recipen.recipeNotes,         // "Ysbsnj"
+                recipen.difficulty,
+                recipen.servings,
+                recipen.prepTime,
+                recipen.cookTime,
+                recipen.recipeNotes,
                 recipen.isFavorite ? 1 : 0,
                 recipen.createdAt,
                 recipen.updatedAt,

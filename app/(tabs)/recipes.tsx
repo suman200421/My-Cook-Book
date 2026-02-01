@@ -14,6 +14,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function Recipe() {
   const { mode } = useLocalSearchParams<{ mode?: string }>();
   const favoritesOnly = mode === "favorites";
+  const quickOnly = mode === "quick";
+  const showSearchAndCategory = !favoritesOnly && !quickOnly;
 
   const { width } = useWindowDimensions();
 
@@ -63,19 +65,24 @@ export default function Recipe() {
 
   const filteredRecipes = favoritesOnly
     ? recipes.filter((recipe) => recipe.isFavorite === true)
-    : findMode
-      ? matchRecipesByIngredients(recipes, allSelectedIngredients)
-      : recipes.filter((recipe) => {
-        const matchesText =
-          recipe.title.toLowerCase().includes(search.toLowerCase()) ||
-          recipe.ingredients.toLowerCase().includes(search.toLowerCase());
+    : quickOnly
+      ? recipes.filter(
+        (recipe) =>
+          recipe.cookTime != null && recipe.prepTime != null && (recipe.prepTime+recipe.cookTime) <= 60
+      )
+      : findMode
+        ? matchRecipesByIngredients(recipes, allSelectedIngredients)
+        : recipes.filter((recipe) => {
+          const matchesText =
+            recipe.title.toLowerCase().includes(search.toLowerCase()) ||
+            recipe.ingredients.toLowerCase().includes(search.toLowerCase());
 
-        const matchesCategory =
-          categoryFilter === "All" ||
-          recipe.category === categoryFilter;
+          const matchesCategory =
+            categoryFilter === "All" ||
+            recipe.category === categoryFilter;
 
-        return matchesText && matchesCategory;
-      });
+          return matchesText && matchesCategory;
+        });
 
   const toggleIngredient = (ingredient: string) => {
     const normalized = ingredient.toLowerCase();
@@ -107,7 +114,7 @@ export default function Recipe() {
             flex: 1
           }}
         >
-          {!favoritesOnly && (
+          {showSearchAndCategory && (
             <View
               style={{
                 flexDirection: "row",
@@ -210,7 +217,7 @@ export default function Recipe() {
 
             </View>
           )}
-          {!favoritesOnly && (
+          {showSearchAndCategory && (
             <View>
               {!findMode && (
                 <ScrollView
@@ -252,48 +259,6 @@ export default function Recipe() {
             </View>
           )}
 
-          {/* <FlatList
-            data={filteredRecipes}
-            numColumns={numColumns}
-            key={numColumns}
-            keyExtractor={(item) => item.id}
-            ListHeaderComponent={
-              favoritesOnly ? (
-                <View>
-                <Pressable
-                  onPress={() => router.replace("/(tabs)/recipes")}
-                  style={{
-                    width:"90%",
-                    marginHorizontal: 16,
-                    marginBottom: 12,
-                    paddingVertical: 10,
-                    borderRadius: 10,
-                    backgroundColor: colors.card,
-                    borderWidth: 1,
-                    borderColor: colors.border,
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={{ color: colors.text, fontWeight: "600" }}>
-                    ← Back to all recipes
-                  </Text>
-                </Pressable>
-                </View>
-              ) : null
-            }
-            contentContainerStyle={{
-              alignItems: "flex-start",
-              paddingHorizontal: 5,
-              paddingTop: 8,
-              paddingBottom: 100,
-            }}
-            columnWrapperStyle={{ justifyContent: "flex-start" }}
-            renderItem={({ item }) => (
-              <View style={{ marginRight: 12, marginBottom: 14 }}>
-                <RecipeItem item={item} onRemove={handleRemove} />
-              </View>
-            )}
-          /> */}
           <FlatList
             data={filteredRecipes}
             numColumns={numColumns}
@@ -307,7 +272,7 @@ export default function Recipe() {
               justifyContent: "flex-start",
             }}
             ListHeaderComponent={
-              favoritesOnly ? (
+              favoritesOnly||quickOnly ? (
                 <View
                   style={{
                     alignSelf: "center",

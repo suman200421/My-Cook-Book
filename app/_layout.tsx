@@ -3,11 +3,15 @@ import { DrawerProvider } from "@/components/DrawerContext";
 import { RecipesProvider } from "@/hooks/useRecipes";
 import { colors } from "@/lib/colors";
 import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider
+      style={{flex:1}}
+    >
+      <StatusBar style="dark"/>
       <DrawerProvider>
         <CustomDrawer />
       <RecipesProvider>

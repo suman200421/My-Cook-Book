@@ -14,15 +14,6 @@ import { colors } from "@/lib/colors";
 import { mergeIngredients } from "@/lib/groceryUtils";
 import { Recipe } from "@/types";
 
-/* -----------------------------
-   Helper: extract ingredients
--------------------------------- */
-function parseIngredients(ingredients: string): string[] {
-  return ingredients
-    .split(",")
-    .map((i) => i.trim())
-    .filter(Boolean);
-}
 
 export default function Shopping() {
   const { recipes } = useRecipes();
@@ -41,10 +32,6 @@ export default function Shopping() {
     );
   };
 
-
-  /* -----------------------------
-     Search recipes by name
-  -------------------------------- */
   const searchedRecipes: Recipe[] =
     query.trim().length === 0
       ? []
@@ -52,12 +39,9 @@ export default function Shopping() {
         r.title.toLowerCase().includes(query.toLowerCase())
       );
 
-  /* -----------------------------
-     Toggle recipe selection
-  -------------------------------- */
   const toggleRecipe = (id: string) => {
-    setShowList(false);        // ⭐ leave grocery mode
-    setCheckedItems([]);      // reset checks
+    setShowList(false);
+    setCheckedItems([]);
 
     setSelectedRecipeIds((prev) =>
       prev.includes(id)
@@ -66,10 +50,6 @@ export default function Shopping() {
     );
   };
 
-
-  /* -----------------------------
-     Generate grocery list
-  -------------------------------- */
   const groceryItems = mergeIngredients(
     recipes
       .filter((r) => selectedRecipeIds.includes(r.id))
@@ -90,7 +70,7 @@ export default function Shopping() {
             value={query}
             onChangeText={(text) => {
               setQuery(text);
-              setShowList(false);       // ⭐ allow searching again
+              setShowList(false);      
               setCheckedItems([]);
             }}
             placeholder="Search recipe to add..."

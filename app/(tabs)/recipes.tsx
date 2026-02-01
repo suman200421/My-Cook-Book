@@ -4,7 +4,7 @@ import { useRecipes } from "@/hooks/useRecipes";
 import { colors } from "@/lib/colors";
 import { INGREDIENT_SUGGESTIONS } from "@/lib/ingredients";
 import { matchRecipesByIngredients } from "@/lib/ingredientUtils";
-import { Stack } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { FlatList, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,6 +12,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function Recipe() {
+  const { mode } = useLocalSearchParams<{ mode?: string }>();
+  const favoritesOnly = mode === "favorites";
 
   const { width } = useWindowDimensions();
 
@@ -59,21 +61,21 @@ export default function Recipe() {
     new Set([...selectedIngredients, ...typedIngredients])
   );
 
+  const filteredRecipes = favoritesOnly
+    ? recipes.filter((recipe) => recipe.isFavorite === true)
+    : findMode
+      ? matchRecipesByIngredients(recipes, allSelectedIngredients)
+      : recipes.filter((recipe) => {
+        const matchesText =
+          recipe.title.toLowerCase().includes(search.toLowerCase()) ||
+          recipe.ingredients.toLowerCase().includes(search.toLowerCase());
 
-  const filteredRecipes = findMode
-    ? matchRecipesByIngredients(recipes, allSelectedIngredients)
-    : recipes.filter((recipe) => {
-      const matchesText =
-        recipe.title.toLowerCase().includes(search.toLowerCase()) ||
-        recipe.ingredients.toLowerCase().includes(search.toLowerCase());
+        const matchesCategory =
+          categoryFilter === "All" ||
+          recipe.category === categoryFilter;
 
-      const matchesCategory =
-        categoryFilter === "All" ||
-        recipe.category === categoryFilter;
-
-      return matchesText && matchesCategory;
-    });
-
+        return matchesText && matchesCategory;
+      });
 
   const toggleIngredient = (ingredient: string) => {
     const normalized = ingredient.toLowerCase();
@@ -92,9 +94,11 @@ export default function Recipe() {
       <Stack.Screen
         options={{
           headerLeft: () => <DrawerButton />,
+          //title: favoritesOnly ? "Favorites" : "Recipes",
           title: "Recipes",
         }}
       />
+
       <SafeAreaView
         edges={["left", "right", "bottom"]}
         style={{ flex: 1, backgroundColor: colors.bg }}>
@@ -103,65 +107,65 @@ export default function Recipe() {
             flex: 1
           }}
         >
-
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              backgroundColor: colors.card,
-              borderRadius: 12,
-              borderWidth: 1,
-              borderColor: colors.border,
-              paddingHorizontal: 12,
-              height: 44,
-              marginBottom: 8,
-              //width:380,
-            }}
-          >
-            <TextInput
-              value={findMode ? ingredientQuery : search}
-              onChangeText={findMode ? setIngredientQuery : setSearch}
-              placeholder={
-                findMode ? "Rice, onion, oil" : "Search recipes..."
-              }
-              placeholderTextColor={colors.sub}
-              style={{
-                flex: 1,
-                color: colors.text,
-                fontSize: 14,
-              }}
-            />
-
-            {/* Divider */}
+          {!favoritesOnly && (
             <View
               style={{
-                width: 1,
-                height: 24,
-                backgroundColor: colors.border,
-                marginHorizontal: 8,
-              }}
-            />
-
-            {/* Toggle button */}
-            <Pressable
-              onPress={() => {
-                setFindMode((v) => !v);
-                setSearch("");
-                setIngredientQuery("");
+                flexDirection: "row",
+                alignItems: "center",
+                backgroundColor: colors.card,
+                borderRadius: 12,
+                borderWidth: 1,
+                borderColor: colors.border,
+                paddingHorizontal: 12,
+                height: 44,
+                marginBottom: 8,
+                //width:380,
               }}
             >
-              <Text
+              <TextInput
+                value={findMode ? ingredientQuery : search}
+                onChangeText={findMode ? setIngredientQuery : setSearch}
+                placeholder={
+                  findMode ? "Rice, onion, oil" : "Search recipes..."
+                }
+                placeholderTextColor={colors.sub}
                 style={{
-                  color: findMode ? colors.accent : colors.sub,
-                  fontWeight: "700",
-                  fontSize: 12,
+                  flex: 1,
+                  color: colors.text,
+                  fontSize: 14,
+                }}
+              />
+
+              {/* Divider */}
+              <View
+                style={{
+                  width: 1,
+                  height: 24,
+                  backgroundColor: colors.border,
+                  marginHorizontal: 8,
+                }}
+              />
+
+              {/* Toggle button */}
+              <Pressable
+                onPress={() => {
+                  setFindMode((v) => !v);
+                  setSearch("");
+                  setIngredientQuery("");
                 }}
               >
-                {findMode ? "ING" : "TXT"}
-              </Text>
-            </Pressable>
-          </View>
-
+                <Text
+                  style={{
+                    color: findMode ? colors.accent : colors.sub,
+                    fontWeight: "700",
+                    fontSize: 12,
+                  }}
+                >
+                  {findMode ? "ING" : "TXT"}
+                </Text>
+              </Pressable>
+            </View>
+          )}
 
           {findMode && INGREDIENT_SUGGESTIONS?.length > 0 && (
             <View
@@ -206,55 +210,79 @@ export default function Recipe() {
 
             </View>
           )}
-
-          <View>
-            {!findMode && (
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{
-                  paddingHorizontal: 16,
-                  paddingBottom: 4,
-                  alignItems: "center",
-                  gap: 8,
-                }}
-              >
-                {["All", "Main course", "Dessert", "Appetizer", "Beverage", "Salad", "Soup", "Snack", "Bread", "Sauce", "Side dish", "Breakfast", "Other"].map((food) => (
-                  <Pressable
-                    key={food}
-                    onPress={() => setCategoryFilter(food as any)}
-                    style={{
-                      paddingHorizontal: 14,
-                      paddingVertical: 8,
-                      borderRadius: 20,
-                      backgroundColor:
-                        categoryFilter === food ? colors.accent : colors.card,
-                      borderWidth: 1,
-                      borderColor: colors.border,
-                    }}
-                  >
-                    <Text
+          {!favoritesOnly && (
+            <View>
+              {!findMode && (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{
+                    paddingHorizontal: 16,
+                    paddingBottom: 4,
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  {["All", "Main course", "Dessert", "Appetizer", "Beverage", "Salad", "Soup", "Snack", "Bread", "Sauce", "Side dish", "Breakfast", "Other"].map((food) => (
+                    <Pressable
+                      key={food}
+                      onPress={() => setCategoryFilter(food as any)}
                       style={{
-                        color: categoryFilter === food ? "#fff" : colors.text,
-                        fontWeight: "600",
+                        paddingHorizontal: 14,
+                        paddingVertical: 8,
+                        borderRadius: 20,
+                        backgroundColor:
+                          categoryFilter === food ? colors.accent : colors.card,
+                        borderWidth: 1,
+                        borderColor: colors.border,
                       }}
                     >
-                      {food}
-                    </Text>
-                  </Pressable>
-                ))}
-              </ScrollView>
-            )}
-          </View>
+                      <Text
+                        style={{
+                          color: categoryFilter === food ? "#fff" : colors.text,
+                          fontWeight: "600",
+                        }}
+                      >
+                        {food}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              )}
+            </View>
+          )}
 
-
-          <FlatList
+          {/* <FlatList
             data={filteredRecipes}
             numColumns={numColumns}
             key={numColumns}
             keyExtractor={(item) => item.id}
+            ListHeaderComponent={
+              favoritesOnly ? (
+                <View>
+                <Pressable
+                  onPress={() => router.replace("/(tabs)/recipes")}
+                  style={{
+                    width:"90%",
+                    marginHorizontal: 16,
+                    marginBottom: 12,
+                    paddingVertical: 10,
+                    borderRadius: 10,
+                    backgroundColor: colors.card,
+                    borderWidth: 1,
+                    borderColor: colors.border,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ color: colors.text, fontWeight: "600" }}>
+                    ← Back to all recipes
+                  </Text>
+                </Pressable>
+                </View>
+              ) : null
+            }
             contentContainerStyle={{
-              alignItems: "flex-start", // 🔒 THIS fixes last row
+              alignItems: "flex-start",
               paddingHorizontal: 5,
               paddingTop: 8,
               paddingBottom: 100,
@@ -265,7 +293,56 @@ export default function Recipe() {
                 <RecipeItem item={item} onRemove={handleRemove} />
               </View>
             )}
+          /> */}
+          <FlatList
+            data={filteredRecipes}
+            numColumns={numColumns}
+            key={numColumns}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={{
+              paddingHorizontal: 5,
+              paddingBottom: 100,
+            }}
+            columnWrapperStyle={{
+              justifyContent: "flex-start",
+            }}
+            ListHeaderComponent={
+              favoritesOnly ? (
+                <View
+                  style={{
+                    alignSelf: "center",
+                    width: "100%",
+                    paddingVertical: 12,
+                  }}
+                >
+                  <Pressable
+                    onPress={() => router.replace("/(tabs)/recipes")}
+                    style={{
+                      alignSelf: "center",
+                      width: "90%",
+                      paddingVertical: 10,
+                      borderRadius: 10,
+                      backgroundColor: colors.card,
+                      borderWidth: 1,
+                      borderColor: colors.border,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ fontWeight: "600", color: colors.text }}>
+                      ← Back to all recipes
+                    </Text>
+                  </Pressable>
+                </View>
+              ) : null
+            }
+            renderItem={({ item }) => (
+              <View style={{ marginRight: 12, marginBottom: 14 }}>
+                <RecipeItem item={item} onRemove={handleRemove} />
+              </View>
+            )}
           />
+
+
         </View>
       </SafeAreaView>
     </>

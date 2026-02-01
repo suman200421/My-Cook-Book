@@ -15,18 +15,21 @@ export default function Home() {
       />
       <ScrollView>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          
           <ActionCard title="Fave" onPress={()=>{
             router.push({
               pathname:"/(tabs)/recipes",
               params:{mode:"favorites"}
             });
           }} icon={<MaterialIcons name="favorite" size={24} color="#A1887F" />} />
+
           <ActionCard title="Quick"  onPress={()=>{
             router.push({
               pathname:"/(tabs)/recipes",
               params:{mode:"quick"}
             });
           }} icon={<MaterialIcons name="flash-on" size={24} color="#A1887F" />} />
+
           <ActionCard title="Vegan" icon={<MaterialIcons name="eco" size={24} color="#A1887F" />} />
           <ActionCard title="Dessert" icon={<MaterialIcons name="cake" size={24} color="#A1887F" />} />
           <ActionCard title="Healthy" icon={<MaterialIcons name="health-and-safety" size={24} color="#A1887F" />} />

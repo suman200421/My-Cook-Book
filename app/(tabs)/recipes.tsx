@@ -302,7 +302,7 @@ export default function Recipe() {
             }
             renderItem={({ item }) => (
               <View style={{ marginRight: 12, marginBottom: 14 }}>
-                <RecipeItem item={item} onRemove={handleRemove} />
+                <RecipeItem item={item} onRemove={handleRemove} onPress={() => router.push(`/recipe/view/${item.id}`)} />
               </View>
             )}
           />

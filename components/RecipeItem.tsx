@@ -2,7 +2,6 @@ import { colors, difficultyColors } from '@/lib/colors';
 import { Recipe } from '@/types';
 import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from 'expo-router';
 import { useState } from "react";
 import { Image, Pressable, Text, View } from 'react-native';
 import DeleteButton from './DeleteButton';
@@ -11,16 +10,19 @@ import FavoriteButton from './FavoriteButton';
 export const RecipeItem = ({
   item,
   onRemove,
+  onPress,
 }: {
   item: Recipe,
   onRemove: (id: string) => void;
+  onPress?: () => void;
 }) => {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <Pressable
-      onPress={() => router.push(`/recipe/view/${item.id}`)}
+      onPress={onPress}
+      disabled={!onPress}
       style={
         ({ pressed }) => ({
           //flex:1,

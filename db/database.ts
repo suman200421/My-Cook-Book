@@ -26,6 +26,16 @@ export const getDBConnection = async () => {
         );
     `
     );
+    await db.execAsync(
+      `
+        CREATE TABLE IF NOT EXISTS meal_plans (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          date TEXT NOT NULL,
+          recipeId TEXT NOT NULL
+        );
+      `
+    );
+
   }
   return db;
 };

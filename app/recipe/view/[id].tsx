@@ -136,6 +136,7 @@ export default function ViewRecipe() {
       <AppFooter>
       <View
         style={{
+          backgroundColor:colors.bg,
           flexDirection: "row",
           justifyContent: "space-between",
           gap: 12,
